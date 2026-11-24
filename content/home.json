@@ -31,7 +31,12 @@
   "team": {
     "intro": "UltraVena is the senior design project of Team 7 in Electrical and Systems Engineering at the University of Pennsylvania.",
     "people": [
-      ["Jonathan Farias Dutra", "Team 7"],
+      ["Jonathan Farias Dutra Rodriguez", "Team 7"],
+      ["Brandon Parkansky", "Team 7"],
+      ["Jose Gonzalez", "Team 7"],
+      ["Charlotte Tan", "Team 7"],
+      ["Gabriel Sola", "Team 7"],
+      ["Dillon Malkani", "Team 7"],
       ["Prof. Rahul Mangharam", "Faculty advisor"],
       ["Dr. Sandeep Aggarwal", "Clinical advisor"]
     ]
