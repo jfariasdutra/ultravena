@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D Model · UltraVena</title>
+<meta name="description" content="Turn the CAD model around in the browser, or download it.">
+<meta property="og:title" content="3D Model · UltraVena">
+<meta property="og:description" content="Turn the CAD model around in the browser, or download it.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/cad-iso.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="index.html"><span class="dot" aria-hidden="true"></span>UltraVena</a>
+    <input type="checkbox" id="menu" class="menu-toggle" aria-label="Open the menu">
+    <label for="menu" class="menu-btn" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="nav" aria-label="Main"><a href="index.html">Overview</a><a href="hardware.html">Hardware</a><a href="wiring-software.html">Wiring &amp; Software</a><a href="parts-list.html">Parts List</a><a href="parts-research.html">Parts Research</a><a href="model.html">Vessel Model</a><a href="cad.html" aria-current="page">3D Model</a><a href="updates.html">Updates</a><a href="downloads.html">Downloads</a></nav>
+  </div>
+</header>
+<main id="main">
+<div class="doc has-toc">
+<aside class="toc"><p class="toc-h">On this page</p><ol><li><a href="#renders">Renders</a></li><li><a href="#cad-files">CAD files</a></li><li><a href="#how-the-model-is-made">How the model is made</a></li></ol></aside>
+<article class="prose">
+<header class="doc-head">
+<h1>3D Model</h1>
+<p class="lede">Turn the CAD model around in the browser, or download it.</p>
+<p class="meta">Updated 24 Nov 2026</p>
+</header>
+<p>This is the actual CAD model (version 6), not an illustration. Drag to turn it, scroll or pinch to zoom, and right-drag or two-finger drag to slide it sideways.</p>
+<div class="viewer" id="viewer" data-base="assets/models/">
+  <div class="viewer-bar">
+    <div class="seg" role="group" aria-label="Probe version">
+      <button type="button" data-variant="butterfly" class="on">Butterfly iQ3</button>
+      <button type="button" data-variant="vscan">GE Vscan Extend</button>
+    </div>
+    <label class="check"><input type="checkbox" id="v-wires"> Show wiring</label>
+    <label class="check"><input type="checkbox" id="v-walls" checked> Show walls</label>
+    <span class="viewer-status" id="v-status">Loading model</span>
+  </div>
+  <div class="viewer-stage" id="v-stage"></div>
+</div>
+
+<h2 id="renders">Renders</h2>
+<figure class="render"><img loading="lazy" alt="The whole rig seen from the front left" class="render" src="assets/img/cad-iso.png"><figcaption>The whole rig seen from the front left</figcaption></figure>
+<figure class="render"><img loading="lazy" alt="The probe head, with the three servos, floating mount and marker actuator" class="render" src="assets/img/cad-head.png"><figcaption>The probe head, with the three servos, floating mount and marker actuator</figcaption></figure>
+<figure class="render"><img loading="lazy" alt="The electronics on the outside of the back wall" class="render" src="assets/img/cad-electronics.png"><figcaption>The electronics on the outside of the back wall</figcaption></figure>
+<h2 id="cad-files">CAD files</h2>
+<p>STEP files open in Onshape, Fusion, SolidWorks and FreeCAD. Each version's download holds two files, one with every wire modelled and a lighter one without.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Download</th>
+<th>What is inside</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="assets/files/ultravena-cad-v6-butterfly.zip">Butterfly iQ3 version</a></td>
+<td>STEP files, with and without wiring</td>
+<td>9 MB</td>
+</tr>
+<tr>
+<td><a href="assets/files/ultravena-cad-v6-vscan.zip">GE Vscan Extend version</a></td>
+<td>STEP files, with and without wiring</td>
+<td>8 MB</td>
+</tr>
+<tr>
+<td><a href="assets/files/ultravena-cad-v6-parts.zip">Printable parts and source</a></td>
+<td>STL files for both versions and the CadQuery scripts that build the model</td>
+<td>0 MB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="how-the-model-is-made">How the model is made</h2>
+<p>The model is written as a Python script using CadQuery, so every dimension is a named number that can be changed and rebuilt. Two automatic checks run on every version. The first looks for any two parts that overlap. The second moves the machine through 579 poses across the full travel of all six axes and looks for collisions at each one. Version 6 passes both for the Butterfly and Vscan versions.</p>
+</article>
+</div>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p><span class="dot" aria-hidden="true"></span>UltraVena · Team 7, Electrical and Systems Engineering, University of Pennsylvania</p>
+    <p class="small">A student research prototype. It is not a medical device and has not been tested on patients.</p>
+  </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="assets/js/viewer.js"></script>
+</body>
+</html>

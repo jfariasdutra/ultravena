@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UltraVena</title>
+<meta name="description" content="UltraVena is a tabletop machine that scans a forearm with a motorised ultrasound probe, finds the fistula, and stamps an ink dot where the needle should go. Nothing pierces the skin.">
+<meta property="og:title" content="UltraVena">
+<meta property="og:description" content="UltraVena is a tabletop machine that scans a forearm with a motorised ultrasound probe, finds the fistula, and stamps an ink dot where the needle should go. Nothing pierces the skin.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/cad-iso.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="index.html"><span class="dot" aria-hidden="true"></span>UltraVena</a>
+    <input type="checkbox" id="menu" class="menu-toggle" aria-label="Open the menu">
+    <label for="menu" class="menu-btn" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="nav" aria-label="Main"><a href="index.html" aria-current="page">Overview</a><a href="hardware.html">Hardware</a><a href="wiring-software.html">Wiring &amp; Software</a><a href="parts-list.html">Parts List</a><a href="parts-research.html">Parts Research</a><a href="model.html">Vessel Model</a><a href="cad.html">3D Model</a><a href="updates.html">Updates</a><a href="downloads.html">Downloads</a></nav>
+  </div>
+</header>
+<main id="main">
+<div class="home"><section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow">Ultrasound-guided cannulation for dialysis</p>
+    <h1>A machine that finds the vein and marks the spot.</h1>
+    <p class="lede">UltraVena is a tabletop machine that scans a forearm with a motorised ultrasound probe, finds the fistula, and stamps an ink dot where the needle should go. Nothing pierces the skin.</p>
+    <p class="stage"><span class="dot" aria-hidden="true"></span>Design stage. CAD version 6 is complete and nothing has been built yet.</p>
+    <p class="actions"><a class="button" href="hardware.html">Read the hardware brief</a><a class="button ghost" href="cad.html">Turn the 3D model</a></p>
+  </div>
+  <figure class="hero-fig"><img src="assets/img/cad-hero.png" alt="CAD render of the UltraVena rig: an aluminium frame with three walls, a slanted front panel carrying a touchscreen and phone, and an overhead gantry holding an ultrasound probe above an arm rest" width="1026" height="821"><figcaption>CAD version 6, Butterfly iQ3 version</figcaption></figure>
+</section>
+<section class="band"><dl class="stats"><div class="stat"><dt>axes of motion</dt><dd>6</dd></div><div class="stat"><dt>mm, fits a clinic table</dt><dd>516 × 558 × 590</dd></div><div class="stat"><dt>most the probe can press, by estimate</dt><dd>~7 N</dd></div><div class="stat"><dt>estimated build cost</dt><dd>~$2,155</dd></div></dl></section>
+<section class="block">
+  <h2>How one scan runs</h2>
+  <ol class="steps"><li><h3>Arm in</h3><p>The user rests a forearm on the padded rest and the lights come on.</p></li><li><h3>Find the arm</h3><p>Two depth cameras build a 3D surface of the forearm.</p></li><li><h3>Pick a start</h3><p>The user taps a spot on the touchscreen.</p></li><li><h3>Touch down</h3><p>The probe tilts square to the skin and lowers until it feels light contact.</p></li><li><h3>Scan</h3><p>The probe steps along the arm while a model outlines the vessel in each image.</p></li><li><h3>Watch</h3><p>Three independent sensors check the arm has not moved.</p></li><li><h3>Choose</h3><p>Software picks the point from the vessel&#x27;s depth, width and position.</p></li><li><h3>Mark</h3><p>The probe lifts, shifts, and a small actuator presses an ink tip onto the skin.</p></li></ol>
+</section>
+<section class="block">
+  <h2>Where the project stands</h2>
+  <ul class="status"><li class="done"><span class="pill">Done</span><div><h3>Mechanical design</h3><p>CAD version 6, checked for collisions across 579 poses</p></div></li><li class="done"><span class="pill">Done</span><div><h3>Parts list</h3><p>Every part matched to a supplier listing, ready to order</p></div></li><li class="done"><span class="pill">Done</span><div><h3>Wiring plan</h3><p>Power tree, data cables and pin plan written</p></div></li><li class="progress"><span class="pill">In progress</span><div><h3>Vessel model</h3><p>Version 2 works on generated images, waiting on real scans</p></div></li><li class="progress"><span class="pill">In progress</span><div><h3>Ultrasound link</h3><p>Butterfly confirmed real-time streaming, details to settle</p></div></li><li class="todo"><span class="pill">Not started</span><div><h3>Control software</h3><p>Planned, not yet written</p></div></li><li class="todo"><span class="pill">Not started</span><div><h3>Physical build</h3><p>Not started</p></div></li><li class="todo"><span class="pill">Not started</span><div><h3>Testing on an arm</h3><p>Not started</p></div></li></ul>
+</section>
+<section class="block">
+  <h2>The documents</h2>
+  <div class="cards"><a class="card" href="hardware.html"><h3>Hardware Brief</h3><p>The design as it stands in CAD version 6, why it is built this way, and how the two probe versions differ.</p><span class="go" aria-hidden="true">Read</span></a><a class="card" href="wiring-software.html"><h3>Wiring and Software</h3><p>What plugs into what, and which piece of software talks over each cable.</p><span class="go" aria-hidden="true">Read</span></a><a class="card" href="parts-list.html"><h3>Parts List</h3><p>Every part to order, with supplier, part number, price and what still needs checking.</p><span class="go" aria-hidden="true">Read</span></a><a class="card" href="parts-research.html"><h3>Parts Research Brief</h3><p>What each part does, the current pick, and what to look for when hunting for something cheaper or better.</p><span class="go" aria-hidden="true">Read</span></a><a class="card" href="model.html"><h3>Vessel Model</h3><p>The image model that outlines the vessel in each ultrasound frame, and where it stands.</p><span class="go" aria-hidden="true">Read</span></a><a class="card" href="cad.html"><h3>3D Model</h3><p>Turn the CAD model around in the browser, or download it.</p><span class="go" aria-hidden="true">Read</span></a></div>
+</section>
+<section class="block two">
+  <div>
+    <h2>Latest updates</h2>
+    <ol class="updates"><li><time>24 Nov 2026</time><div><h3>Project site goes up</h3><p>This site now holds the hardware brief, the wiring and software plan, the parts list, the parts research brief, the vessel model page and a live 3D view of the CAD model.</p></div></li><li><time>24 Nov 2026</time><div><h3>CAD version 6, feedback servos</h3><p>The three hobby servos were replaced by Waveshare ST3215 bus servos, which report their true angle and share one chained cable. The servo driver board became a bus adapter, the servos got their own 12 V converter, and the marker actuator got a small 6 V converter. The parts list total rose by about $25 to roughly $2,155.</p></div></li><li><time>24 Nov 2026</time><div><h3>Butterfly confirms real-time streaming</h3><p>In a meeting with the team, Butterfly confirmed that its SDK can stream imaging in real time to other devices. That removes what had been the largest open problem in the Butterfly version, which was getting the image into the computer. Butterfly probes also offer Doppler and biplane imaging.</p></div></li></ol>
+    <p><a href="updates.html">All updates</a></p>
+  </div>
+  <div>
+    <h2>The team</h2>
+    <p>UltraVena is the senior design project of Team 7 in Electrical and Systems Engineering at the University of Pennsylvania.</p>
+    <ul class="people"><li><strong>Jonathan Farias Dutra</strong><span>Team 7</span></li><li><strong>Prof. Rahul Mangharam</strong><span>Faculty advisor</span></li><li><strong>Dr. Sandeep Aggarwal</strong><span>Clinical advisor</span></li></ul>
+  </div>
+</section></div>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p><span class="dot" aria-hidden="true"></span>UltraVena · Team 7, Electrical and Systems Engineering, University of Pennsylvania</p>
+    <p class="small">A student research prototype. It is not a medical device and has not been tested on patients.</p>
+  </div>
+</footer>
+
+</body>
+</html>

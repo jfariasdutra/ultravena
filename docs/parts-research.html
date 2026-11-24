@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parts Research Brief · UltraVena</title>
+<meta name="description" content="What each part does, the current pick, and what to look for when hunting for something cheaper or better.">
+<meta property="og:title" content="Parts Research Brief · UltraVena">
+<meta property="og:description" content="What each part does, the current pick, and what to look for when hunting for something cheaper or better.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/cad-iso.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="index.html"><span class="dot" aria-hidden="true"></span>UltraVena</a>
+    <input type="checkbox" id="menu" class="menu-toggle" aria-label="Open the menu">
+    <label for="menu" class="menu-btn" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="nav" aria-label="Main"><a href="index.html">Overview</a><a href="hardware.html">Hardware</a><a href="wiring-software.html">Wiring &amp; Software</a><a href="parts-list.html">Parts List</a><a href="parts-research.html" aria-current="page">Parts Research</a><a href="model.html">Vessel Model</a><a href="cad.html">3D Model</a><a href="updates.html">Updates</a><a href="downloads.html">Downloads</a></nav>
+  </div>
+</header>
+<main id="main">
+<div class="doc has-toc">
+<aside class="toc"><p class="toc-h">On this page</p><ol><li><a href="#the-task">The task</a></li><li><a href="#how-the-machine-works">How the machine works</a></li><li><a href="#motion-system">Motion system</a></li><li><a href="#tilt-servos">Tilt servos</a></li><li><a href="#probe-head">Probe head</a></li><li><a href="#sensing-the-arm">Sensing the arm</a></li><li><a href="#computing-and-touchscreen">Computing and touchscreen</a></li><li><a href="#power-safety-and-lighting">Power, safety and lighting</a></li><li><a href="#structure-and-version-specific-parts">Structure and version-specific parts</a></li><li><a href="#problems-no-part-solves-yet">Problems no part solves yet</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+<article class="prose">
+<header class="doc-head">
+<h1>Parts Research Brief</h1>
+<p class="lede">What each part does, the current pick, and what to look for when hunting for something cheaper or better.</p>
+<p class="meta">Updated 24 Nov 2026 · <a href="assets/files/ultravena-parts-research.pdf">Download as PDF</a></p>
+</header>
+<h2 id="the-task">The task</h2>
+<p>For every part below, answer two questions: does the current pick actually work for its job, and is there something cheaper or better. Each section explains what the part does and why the machine needs it, names the current pick with its price, and lists what to check when comparing options.</p>
+<p>Every part in the build is listed, including the small ones nobody expects to change (belts, brackets, cables, printed pieces), so the tables double as a checklist that nothing has been forgotten.</p>
+<p>Prices marked <strong>confirmed</strong> were read from the supplier's page on 23 or 24 Nov 2026. Prices marked <strong>estimate</strong> have no chosen listing yet, so finding one is part of the job. The live order list with links and IDs is in <a href="parts-list.html">UltraVena Hardware Parts List</a>.</p>
+<p>For each part you research, bring back:</p>
+<ul>
+<li>
+<p>The exact product name, supplier, part number and link.</p>
+</li>
+<li>
+<p>Price, shipping time and whether it is in stock.</p>
+</li>
+<li>
+<p>The numbers listed under "What to look for" for that part.</p>
+</li>
+<li>
+<p>A link to the supplier's 3D model (STEP file) if one exists, so it can go into the CAD.</p>
+</li>
+<li>
+<p>One line on what would have to change in the design if we switched to it.</p>
+</li>
+</ul>
+<p>A part that is cheaper but forces a redesign elsewhere is not automatically a win, so always note what it touches.</p>
+<h2 id="how-the-machine-works">How the machine works</h2>
+<p>UltraVena is a tabletop box the user slides a forearm into. A motorised ultrasound probe scans the arm, finds the fistula, and stamps an ink dot on the skin where the needle should go. Nothing pierces the skin.</p>
+<p>The probe hangs from a three-axis gantry (X across the arm, Y along it, Z up and down) and can also turn three ways (yaw, pitch, roll), so it has six axes of motion in total. One scan runs like this:</p>
+<ol>
+<li>
+<p><strong>Arm in, lights on.</strong> The user rests an arm on the padded rest. LED strips light the inside so the cameras can see.</p>
+</li>
+<li>
+<p><strong>Find the arm.</strong> Two depth cameras build a 3D surface of the forearm and track printed markers stuck on the skin.</p>
+</li>
+<li>
+<p><strong>Pick a start.</strong> The user taps a spot on the touchscreen, which shows the camera view of the arm.</p>
+</li>
+<li>
+<p><strong>Travel and touch down.</strong> The gantry carries the probe above that spot. The servos tilt it square to the skin, and Z lowers it until the load cell feels light contact.</p>
+</li>
+<li>
+<p><strong>Scan.</strong> The probe steps along the arm. At each step the computer receives the live ultrasound image (streamed by the Butterfly SDK in the Butterfly build) and a trained model outlines the vessel.</p>
+</li>
+<li>
+<p><strong>Watch for movement.</strong> Throughout, a wrist band motion sensor, pressure pads under the arm and the cameras check the arm has not moved. If it has, the machine stops.</p>
+</li>
+<li>
+<p><strong>Choose the point.</strong> Software picks the cannulation point from the vessel's depth, width and position.</p>
+</li>
+<li>
+<p><strong>Mark it.</strong> The probe lifts slightly, the gantry shifts by a known offset so the marker sits over that point, and a small actuator presses an ink tip onto the skin.</p>
+</li>
+</ol>
+<p>Two controllers share the work. A <strong>Jetson</strong> computer runs the image model, the cameras, the planning and the touchscreen. A <strong>motion controller</strong> turns its commands into motor steps, and a small <strong>microcontroller</strong> reads the fast safety sensors. The three tilt servos sit on one shared cable and report their true angles back, which is how the software keeps all six axes in step.</p>
+<p>There are two builds, one around the <strong>Butterfly iQ3</strong> probe and one around the <strong>GE Vscan Extend</strong>. Butterfly has confirmed that its SDK streams imaging in real time to other devices, so in that build the Jetson takes the image straight from the stream and the phone on the front panel is simply the operator's view. The Vscan shows its image only on its own display unit, so that build still points a small camera at the display. Everything else is shared.</p>
+<h2 id="motion-system">Motion system</h2>
+<p>The gantry moves the probe in X, Y and Z. It is built from a cheap 3D printer taken apart for its motors, belts, rails, controller and power supply, then rebuilt as a bridge over the arm. Y uses two motors (one per side rail), X one, Z one.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it does</th>
+<th>Current pick</th>
+<th>Price (USD)</th>
+<th>Other options to price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Donor printer</td>
+<td>Source of three stepper motors, belts, pulleys, rails, lead screw, controller and the 24 V supply</td>
+<td>Creality Ender-3 V3 SE (MatterHackers, M-5EY-NWU0)</td>
+<td>179.00 confirmed</td>
+<td>Same printer at Best Buy, 199.00 confirmed. A used Ender 3 of any generation. Buying the motors, rails and controller separately.</td>
+</tr>
+<tr>
+<td>Fourth stepper motor</td>
+<td>Second Y motor. The donor's fourth motor is a short extruder motor with a gear on its shaft and cannot drive a belt.</td>
+<td>Pololu 2267, NEMA 17, 42 × 38 mm, 1.7 A</td>
+<td>35.12 confirmed</td>
+<td>Generic NEMA 17 motors, likely much cheaper.</td>
+</tr>
+<tr>
+<td>X and Y side rails</td>
+<td>The tracks the bridge and the carriage roll along</td>
+<td>20 mm slotted extrusion from the donor, plus the frame extrusion listed under Structure</td>
+<td>Included</td>
+<td>Longer lengths if the donor's are under 400 mm.</td>
+</tr>
+<tr>
+<td>Roller wheels and carriage plates</td>
+<td>Carry the bridge along Y and the carriage along X</td>
+<td>Donor's wheels and plates, with printed adapters where the hole patterns differ</td>
+<td>Included</td>
+<td>A wheel and plate kit made for 20 mm extrusion.</td>
+</tr>
+<tr>
+<td>Timing belts</td>
+<td>Pull the bridge (two belts, one per side) and the carriage (one belt)</td>
+<td>Donor's 6 mm GT2 belt, with extra length bought by the metre</td>
+<td>In the wiring and fasteners lot</td>
+<td>Any 6 mm GT2 belt, fibreglass reinforced.</td>
+</tr>
+<tr>
+<td>Belt pulleys and idlers</td>
+<td>Pulley on each motor shaft, free-spinning idler at the far end of each belt</td>
+<td>20-tooth GT2 pulleys and idlers, three of each (donor supplies two)</td>
+<td>In the wiring and fasteners lot</td>
+<td>Any 20-tooth GT2 set with a 5 mm bore.</td>
+</tr>
+<tr>
+<td>Z lead screw, nut and shaft coupler</td>
+<td>Turns the Z motor's rotation into up and down travel</td>
+<td>Donor's 8 mm lead screw, cut to about 150 mm</td>
+<td>Included</td>
+<td>A ready-cut 150 mm screw with a matching nut.</td>
+</tr>
+<tr>
+<td>Z linear rail</td>
+<td>Guides the Z slide. The probe head hangs 116 mm out from it, so it must resist twisting.</td>
+<td>MGN12 rail, 250 mm, with two MGN12H carriages (no supplier chosen)</td>
+<td>30.00 estimate</td>
+<td>Any supplier of MGN12 rail; a wheeled plate on the existing extrusion.</td>
+</tr>
+<tr>
+<td>Z slide plate and motor mounts</td>
+<td>Join the rail carriages, the lead nut and the head, and hold the four motors</td>
+<td>Printed, or cut from 3 mm aluminium</td>
+<td>Filament</td>
+<td>A local laser or waterjet cutting service.</td>
+</tr>
+<tr>
+<td>Limit switches</td>
+<td>Give each axis a known home position at startup. A fourth senses the floating head lifting.</td>
+<td>Roller-lever micro switch × 4 (no supplier chosen)</td>
+<td>8.00 estimate</td>
+<td>Reuse the donor's switches if they fit.</td>
+</tr>
+<tr>
+<td>Motion controller</td>
+<td>Turns move commands from the Jetson into timed motor steps</td>
+<td>The donor printer's own board</td>
+<td>Included</td>
+<td>A generic four-driver printer board.</td>
+</tr>
+<tr>
+<td>Cable chain</td>
+<td>Carries the moving wires to the bridge and the head without snagging</td>
+<td>10 × 15 mm drag chain, about 1 m (no supplier chosen)</td>
+<td>In the wiring and fasteners lot</td>
+<td>Any small drag chain; a printed cable tray.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What to look for</strong></p>
+<ul>
+<li>
+<p><strong>Donor printer:</strong> how many full-size motors it really contains; whether its controller can be reflashed with open firmware and can drive two Y motors; a 24 V supply of at least 300 W (ours peaks near 245 W); rail and belt lengths of at least 400 mm; whether its limit switches are separate parts.</p>
+</li>
+<li>
+<p><strong>Stepper motor:</strong> 42 mm frame (NEMA 17), body at least 38 mm long, plain 5 mm shaft with a flat, 1.8° step, rated 1.5 A or more. It should match the donor's Y motor closely, because the two run as a pair.</p>
+</li>
+<li>
+<p><strong>Linear rail:</strong> carriages must be the long "H" type, two of them, on a rail at least 240 mm long. Check for play by hand if buying in person; cheap rails vary a lot.</p>
+</li>
+<li>
+<p><strong>Controller:</strong> at least four motor drivers, 24 V input, USB connection, and firmware we can configure ourselves.</p>
+</li>
+<li>
+<p><strong>Belts, pulleys and idlers:</strong> all must share the same tooth pattern (GT2, 2 mm pitch) and belt width (6 mm). Total belt needed is about 3 m.</p>
+</li>
+<li>
+<p><strong>Lead screw:</strong> check the nut has no free play along the screw, since any play shows up as an error in how deep the probe sits.</p>
+</li>
+<li>
+<p><strong>Cable chain:</strong> the inside must fit a USB cable, the servo cable and about ten thin wires, and it must bend to a radius of 30 mm or less.</p>
+</li>
+</ul>
+<h2 id="tilt-servos">Tilt servos</h2>
+<p>Three servos turn the probe: yaw spins it about its own axis, pitch and roll tilt it so its face sits square on the curve of the arm. This was the part of the design most in question, and the design has now moved from hobby servos to servos that report their position.</p>
+<p><strong>The problem is slack, not strength.</strong> Tilting the probe while it presses on the arm takes about 0.2 N·m (roughly 2 kg·cm). Every option below has at least seven times that. What limits accuracy is that ordinary hobby servos have loose gears, about a degree of play, and never report where they really are. One degree of tilt moves the probe face about 1 mm and shifts the ink mark by a similar amount.</p>
+<p>The CAD model (version 6) uses the Waveshare ST3215. The hobby servo stays as the fallback, and the Dynamixel is the upgrade if testing shows the ST3215 is not good enough.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Hobby servo (fallback)</th>
+<th>Feedback servo, budget (current pick)</th>
+<th>Feedback servo, premium</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Product</td>
+<td><a href="https://www.robotshop.com/products/sunfounder-sf3218mg-metal-gear-digital-servo-20kg-high-torque" target="_blank" rel="noopener">SunFounder SF3218MG</a></td>
+<td><a href="https://www.waveshare.com/st3215-servo.htm?sku=22414" target="_blank" rel="noopener">Waveshare ST3215</a></td>
+<td><a href="https://www.robotshop.com/products/robotis-dynamixel-xl430-w250-t-smart-servo-actuator" target="_blank" rel="noopener">ROBOTIS Dynamixel XL430-W250-T</a></td>
+</tr>
+<tr>
+<td>Price each (USD)</td>
+<td>18.58 confirmed</td>
+<td>21.99 confirmed</td>
+<td>49.90 confirmed</td>
+</tr>
+<tr>
+<td>Price for three</td>
+<td>55.74</td>
+<td>65.97</td>
+<td>149.70</td>
+</tr>
+<tr>
+<td>Torque</td>
+<td>20 kg·cm</td>
+<td>30 kg·cm at 12 V (a 7.4 V version gives 19.5)</td>
+<td>1.4 N·m at 11.1 V, about 14 kg·cm</td>
+</tr>
+<tr>
+<td>Reports its position</td>
+<td>No</td>
+<td>Yes: position, load, speed, voltage</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Position sensor</td>
+<td>None readable</td>
+<td>12-bit magnetic encoder, 4096 steps per turn</td>
+<td>12-bit encoder, about 0.088° per step</td>
+</tr>
+<tr>
+<td>Control</td>
+<td>One signal wire each from a driver board</td>
+<td>Serial bus, servos chained on one cable</td>
+<td>Serial bus, servos chained on one cable</td>
+</tr>
+<tr>
+<td>Supply</td>
+<td>4.8 to 7.2 V</td>
+<td>6 to 12.6 V (or 4 to 7.4 V version)</td>
+<td>6.5 to 12 V</td>
+</tr>
+<tr>
+<td>Stall current</td>
+<td>Not published; 2.5 A assumed</td>
+<td>2.7 A</td>
+<td>1.3 A at 11.1 V</td>
+</tr>
+<tr>
+<td>Gears</td>
+<td>Metal</td>
+<td>Metal</td>
+<td>Plastic</td>
+</tr>
+<tr>
+<td>Weight</td>
+<td>Not published</td>
+<td>89 g</td>
+<td>57 g</td>
+</tr>
+<tr>
+<td>Stated gear slack</td>
+<td>Not published</td>
+<td>Not published</td>
+<td>Not published</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What feedback fixes, and what it does not.</strong> A feedback servo tells the computer its true angle, so the software can correct for error, confirm a move finished, and time the six axes together. It does not remove gear slack by itself. None of the three pages states a slack figure, so the only way to know is to buy one and measure it.</p>
+<p><strong>What the switch changed in the design</strong></p>
+<ul>
+<li>
+<p>The servo driver board (Adafruit 815, $14.95) is gone, replaced by a serial bus adapter at $4.99.</p>
+</li>
+<li>
+<p>Wiring dropped from three separate leads to one cable chained from servo to servo.</p>
+</li>
+<li>
+<p>The servos now run on 12 V from their own 15 A converter, because three of them can draw 8.1 A when stalled and the Jetson's 12 V converter is rated 4.5 A.</p>
+</li>
+<li>
+<p>The marker actuator, which used to share the servos' 6 V, got a small 6 V converter of its own.</p>
+</li>
+<li>
+<p>The printed yaw mount, yoke and pitch ring were redrawn with cradles for the new body, which is 45.2 × 24.7 × 35 mm.</p>
+</li>
+<li>
+<p>The tilt sensor on the probe holder stays for now as an independent check on pitch and roll.</p>
+</li>
+</ul>
+<p><strong>Parts that go with the servos</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it does</th>
+<th>Current pick</th>
+<th>Price (USD)</th>
+<th>Other options to price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Serial bus adapter</td>
+<td>Links the servo cable to the microcontroller or to the Jetson over USB, and feeds the servos 12 V</td>
+<td><a href="https://www.waveshare.com/bus-servo-adapter-a.htm" target="_blank" rel="noopener">Waveshare Bus Servo Adapter (A)</a>, SKU 25514</td>
+<td>4.99 confirmed</td>
+<td>Feetech's own adapter boards; the Dynamixel U2D2 if we move to Dynamixel.</td>
+</tr>
+<tr>
+<td>Servo horns (× 3)</td>
+<td>The disc on each servo's shaft that the printed parts bolt to</td>
+<td>The metal horn supplied with each servo</td>
+<td>Included, to confirm</td>
+<td>Aluminium 25-tooth horns.</td>
+</tr>
+<tr>
+<td>Servo cables (× 3)</td>
+<td>Carry power and data from the adapter to yaw, then pitch, then roll</td>
+<td>The lead supplied with each servo, extended for the run from the back wall to the head</td>
+<td>Included, to confirm</td>
+<td>Longer three-wire leads of the same connector type, rated for repeated bending.</td>
+</tr>
+<tr>
+<td>Printed servo cradles</td>
+<td>Clamp each servo body to the yaw mount, the yoke arm and the pitch ring</td>
+<td>Printed in-house</td>
+<td>Filament</td>
+<td>None needed.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What to look for</strong></p>
+<ul>
+<li>
+<p>A stated backlash or gear-play figure in degrees. Smaller is better; under 0.5° would be a real gain.</p>
+</li>
+<li>
+<p>Whether the position sensor is on the output shaft (good) or the motor (blind to gear slack).</p>
+</li>
+<li>
+<p>A working code library for Python on the Jetson or for the Teensy.</p>
+</li>
+<li>
+<p>Body dimensions and a downloadable 3D model, since any change of body means reprinting the cradles.</p>
+</li>
+<li>
+<p>Weight. All three ride on the moving head, and the heaviest is the pitch servo out on the yoke arm.</p>
+</li>
+<li>
+<p>Stall current and supply voltage, which decide the converter.</p>
+</li>
+<li>
+<p>Other brands in the same family worth pricing: Feetech (the maker behind the ST3215), Hiwonder, and the Dynamixel XC and XM lines.</p>
+</li>
+</ul>
+<p><strong>If slack is still too high after testing,</strong> two cheap mechanical fixes are worth researching: a light spring that keeps each tilt axis pressed to one side of its slack, and replacing the tilt servos with small geared stepper motors.</p>
+<h2 id="probe-head">Probe head</h2>
+<p>The head is everything that hangs from the Z slide: a floating mount, the load cell, the three servos, the printed gimbal that holds the probe, the tilt sensor and the marker.</p>
+<p>The head <strong>floats</strong>. It hangs on two guide rods and lifts freely by 15 mm if the probe is pushed up, so the most it can ever press on the arm is its own weight (about 7 N by estimate with the heavier servos, to be confirmed by weighing the finished head). This is the mechanical safety limit and must not be designed out.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it does</th>
+<th>Current pick</th>
+<th>Price (USD)</th>
+<th>Other options to price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ultrasound probe</td>
+<td>Makes the image. The whole head is shaped around it.</td>
+<td>Butterfly iQ3, or GE Vscan Extend with its display unit</td>
+<td>Not in this budget</td>
+<td>None; the two builds exist to compare these two.</td>
+</tr>
+<tr>
+<td>Floating mount hardware</td>
+<td>Lets the head lift under force</td>
+<td>Two 6 mm rods, two bushings, two stop collars (no supplier chosen)</td>
+<td>12.00 estimate</td>
+<td>Linear ball bushings; a short second linear rail.</td>
+</tr>
+<tr>
+<td>Carrier plate</td>
+<td>Rides on the two rods and carries the load cell and everything below it</td>
+<td>Printed in-house</td>
+<td>Filament</td>
+<td>Cut from 3 mm aluminium if the print flexes.</td>
+</tr>
+<tr>
+<td>Lift switch</td>
+<td>Trips the moment the head starts to float, which tells the motors to stop</td>
+<td>One of the four limit switches in the motion table</td>
+<td>Counted there</td>
+<td>Same choices as the limit switches.</td>
+</tr>
+<tr>
+<td>Load cell</td>
+<td>Measures how hard the probe presses, so Z can stop at light contact</td>
+<td>SparkFun SEN-14729, 5 kg bar (TAL220B)</td>
+<td>15.50 confirmed</td>
+<td>A 1 or 2 kg bar of the same size, for finer readings.</td>
+</tr>
+<tr>
+<td>Load cell amplifier</td>
+<td>Turns the load cell's tiny signal into a number the microcontroller reads. Mounted on the head, so the weak signal travels only a few centimetres.</td>
+<td>SparkFun SEN-13879 (HX711)</td>
+<td>4.95 confirmed</td>
+<td>Amplifier boards with a standard two-wire data bus.</td>
+</tr>
+<tr>
+<td>Printed gimbal (yaw mount, yoke, pitch ring, probe holder)</td>
+<td>The nested frames that let the three servos turn the probe about a point 55 mm above its face</td>
+<td>Printed in-house, one set per probe</td>
+<td>Filament</td>
+<td>A print service, or a stiffer material, if the parts flex.</td>
+</tr>
+<tr>
+<td>Probe clamp screws and padding</td>
+<td>Hold the probe in its holder without marking it</td>
+<td>M3 screws with a strip of thin foam</td>
+<td>In the wiring and fasteners lot</td>
+<td>None needed.</td>
+</tr>
+<tr>
+<td>Tilt sensor</td>
+<td>Reads the probe's true pitch and roll from gravity, as a check on the servos</td>
+<td>Adafruit 4754 (BNO085)</td>
+<td>29.50 confirmed</td>
+<td>Cheaper motion sensors. A second one goes in the wrist band.</td>
+</tr>
+<tr>
+<td>Marker actuator</td>
+<td>Lowers an ink tip onto the skin and presses it</td>
+<td>Actuonix L12-30-50-6-R linear servo (RobotShop Canada, RB-Fir-223)</td>
+<td>102.94, currency unclear</td>
+<td>Cheaper micro linear servos; a small servo driving a rack.</td>
+</tr>
+<tr>
+<td>Marker actuator clamp</td>
+<td>Fixes the actuator to the side of the probe holder, 48.5 mm from the probe centre (44 mm on the Vscan)</td>
+<td>Printed in-house</td>
+<td>Filament</td>
+<td>None needed.</td>
+</tr>
+<tr>
+<td>Marker tip</td>
+<td>Leaves the dot</td>
+<td>Tip cut from a skin-safe marker</td>
+<td>0</td>
+<td>Surgical skin markers.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What to look for</strong></p>
+<ul>
+<li>
+<p><strong>Floating mount:</strong> it must slide freely even when the head is tilted or pushed sideways, with at least 15 mm of travel. Sticky bushings defeat the safety limit.</p>
+</li>
+<li>
+<p><strong>Load cell:</strong> bar type, about 80 × 12.7 × 12.7 mm, four wires. It carries the head's weight (about 730 g) all the time, so capacity must exceed that plus the pressing force.</p>
+</li>
+<li>
+<p><strong>Amplifier:</strong> runs from 3.3 V, and offers at least 80 readings per second.</p>
+</li>
+<li>
+<p><strong>Tilt sensor:</strong> does its own sensor fusion on the chip, is accurate to about 1°, runs from 3.3 V, and has a serial output mode for the long cable run.</p>
+</li>
+<li>
+<p><strong>Marker actuator:</strong> this is the most overpriced part in the list. The job needs only about 14 mm of travel and a few newtons. Look for travel of 15 mm or more, position control from a standard servo signal that a 3.3 V board can drive, a 6 V supply, closed length under about 85 mm, and weight under 40 g.</p>
+</li>
+</ul>
+<h2 id="sensing-the-arm">Sensing the arm</h2>
+<p>The machine has to know where the arm is, what shape its surface is, and whether it has moved. Three independent sensors watch for movement so that no single failure goes unnoticed.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it does</th>
+<th>Current pick</th>
+<th>Price (USD)</th>
+<th>Other options to price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Depth cameras (× 2)</td>
+<td>Measure the 3D surface of the forearm and track the markers. Two, at opposite corners, so the probe head cannot block both.</td>
+<td>RealSense D405 (part no. 82635DSD405)</td>
+<td>350.00 each, estimate</td>
+<td>Other RealSense models; other depth cameras; two plain webcams.</td>
+</tr>
+<tr>
+<td>Camera brackets (× 2)</td>
+<td>Hold each camera high in a corner, angled down at the arm</td>
+<td>Printed in-house</td>
+<td>Filament</td>
+<td>A small ball-head mount, which makes aiming easier.</td>
+</tr>
+<tr>
+<td>Camera USB cables (× 2)</td>
+<td>Carry depth data to the hub</td>
+<td>The cable supplied with each camera, if long enough</td>
+<td>Included, to confirm</td>
+<td>USB 3 cables of about 1 m with a locking or right-angle plug.</td>
+</tr>
+<tr>
+<td>Tracking markers (× 4)</td>
+<td>Printed patterns stuck on the skin that the cameras can locate exactly</td>
+<td>Printed in-house on sticker paper</td>
+<td>0</td>
+<td>None needed.</td>
+</tr>
+<tr>
+<td>Wrist band sensor</td>
+<td>Catches a twitch faster than the cameras can</td>
+<td>A second BNO085</td>
+<td>29.50 confirmed</td>
+<td>Same choices as the tilt sensor.</td>
+</tr>
+<tr>
+<td>Wrist strap</td>
+<td>Holds that sensor on the wrist</td>
+<td>Elastic hook-and-loop strap</td>
+<td>In the padding and strap lot</td>
+<td>Any soft strap that wipes clean.</td>
+</tr>
+<tr>
+<td>Pressure pads (× 6)</td>
+<td>Feel the arm lift or roll on the rest</td>
+<td>Adafruit 1075 square force sensor</td>
+<td>5.95 each confirmed, out of stock</td>
+<td>Pololu 1645, same size, 20.49 confirmed.</td>
+</tr>
+<tr>
+<td>Pad resistors (× 6)</td>
+<td>Each pad needs one fixed resistor so the microcontroller can read it</td>
+<td>10 kΩ resistors</td>
+<td>In the wiring and fasteners lot</td>
+<td>None needed.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What to look for</strong></p>
+<ul>
+<li>
+<p><strong>Depth cameras:</strong> this is the largest cost in the build, about a third of the total, so it is the most valuable thing to research.</p>
+<ul>
+<li>
+<p>Closest working distance of 20 cm or less. Everything in the rig is within half a metre.</p>
+</li>
+<li>
+<p>Depth accuracy of 1 to 2 mm at 30 to 40 cm.</p>
+</li>
+<li>
+<p>Whether it works on bare skin. The D405 has no built-in light pattern and relies on visible texture, which smooth skin lacks. A camera that projects its own pattern may do better.</p>
+</li>
+<li>
+<p>USB 3, and software support for a Jetson running Linux.</p>
+</li>
+<li>
+<p>Whether two can run side by side without interfering.</p>
+</li>
+<li>
+<p>Whether one depth camera plus one cheap webcam would be enough.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Pressure pads:</strong> sensing area near 38 mm square, responds to forces from about 0.2 N, thin enough to sit under padding, with a tail long enough to reach the edge of the arm rest.</p>
+</li>
+</ul>
+<h2 id="computing-and-touchscreen">Computing and touchscreen</h2>
+<p>The Jetson is the machine's brain. It runs the vessel-finding model on each ultrasound frame, reads the depth cameras, plans every move and draws the touchscreen. The microcontroller handles the fast safety loop (wrist band, pressure pads, load cell, lift switch) because that must keep running even if the Jetson is busy. In the Butterfly build the ultrasound frames reach the Jetson through Butterfly's SDK, which the company confirmed can stream imaging in real time to other devices.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it does</th>
+<th>Current pick</th>
+<th>Price (USD)</th>
+<th>Other options to price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Main computer</td>
+<td>Image model, cameras, planning, user interface</td>
+<td>NVIDIA Jetson Orin Nano Super Developer Kit (SparkFun DEV-22098)</td>
+<td>249.00 confirmed</td>
+<td>Other Jetson kits; a small PC with a graphics chip.</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>Holds the operating system and software</td>
+<td>Not chosen</td>
+<td>30.00 estimate</td>
+<td>Any drive the kit accepts.</td>
+</tr>
+<tr>
+<td>Ultrasound image link (Butterfly build)</td>
+<td>Gets live frames from the probe to the Jetson</td>
+<td>Butterfly SDK real-time stream</td>
+<td>No hardware cost known</td>
+<td>None; ask Butterfly about licence terms.</td>
+</tr>
+<tr>
+<td>Phone (Butterfly build)</td>
+<td>Runs the Butterfly app and shows the operator the image</td>
+<td>The team's own phone on the front panel</td>
+<td>Not in this budget</td>
+<td>A tablet, if the SDK allows it.</td>
+</tr>
+<tr>
+<td>Microcontroller</td>
+<td>Fast safety loop and sensor reading</td>
+<td>Teensy 4.0 (SparkFun DEV-15583)</td>
+<td>23.80 confirmed</td>
+<td>Cheaper microcontroller boards.</td>
+</tr>
+<tr>
+<td>Touchscreen</td>
+<td>Shows the camera view; the user taps to start, stop and choose a site</td>
+<td>Waveshare 7 inch HDMI LCD (H) with case, SKU 13857</td>
+<td>53.99 confirmed</td>
+<td>Other 7 inch HDMI touch displays.</td>
+</tr>
+<tr>
+<td>USB hub</td>
+<td>The Jetson has fewer ports than there are devices</td>
+<td>Powered USB 3 hub, 7 port (not chosen)</td>
+<td>25.00 estimate</td>
+<td>Any powered hub.</td>
+</tr>
+<tr>
+<td>HDMI and USB cables</td>
+<td>Join the touchscreen, hub, motion controller, microcontroller and servo adapter to the Jetson</td>
+<td>Short cables, some supplied with the parts</td>
+<td>In the wiring and fasteners lot</td>
+<td>Right-angle plugs where a cable passes through a wall.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What to look for</strong></p>
+<ul>
+<li>
+<p><strong>Main computer:</strong> must run our image model at 10 frames a second or better, take two USB 3 depth cameras at once, drive an HDMI screen, and accept a 9 to 20 V supply.</p>
+</li>
+<li>
+<p><strong>Storage:</strong> check which drive type and length the kit's slot takes before buying.</p>
+</li>
+<li>
+<p><strong>Microcontroller:</strong> 3.3 V logic, at least six analog inputs for the pressure pads, two or more serial ports, and USB. Note the Teensy is not safe with 5 V signals.</p>
+</li>
+<li>
+<p><strong>Touchscreen:</strong> HDMI video plus touch over USB, capacitive, works on Linux without a special driver, runs from 5 V at about 1 A, and fits a space about 190 × 122 mm on the slanted front panel.</p>
+</li>
+<li>
+<p><strong>USB hub:</strong> USB 3, its own power input, at least five ports.</p>
+</li>
+<li>
+<p><strong>Ultrasound image link:</strong> from Butterfly we still need to know which device hosts the probe, whether the Jetson (Linux on an Arm processor) can receive the stream directly or only through the phone, the delay from probe to frame, and whether Doppler and biplane frames are included.</p>
+</li>
+</ul>
+<h2 id="power-safety-and-lighting">Power, safety and lighting</h2>
+<p>One 24 V supply feeds everything. Four converters step it down: 12 V for the Jetson and lights, a separate 12 V for the three servos, 6 V for the marker actuator, and 5 V for the touchscreen and USB hub. The emergency stop cuts 24 V to the motion controller and to the servo and actuator converters, so everything that moves loses power while the computer and sensors stay on. Peak draw is about 245 W of the supply's 350 W.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it does</th>
+<th>Current pick</th>
+<th>Price (USD)</th>
+<th>Other options to price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>24 V supply</td>
+<td>Powers the whole machine</td>
+<td>The donor printer's 350 W supply</td>
+<td>Included</td>
+<td>A standalone 24 V supply if the donor's is unusable.</td>
+</tr>
+<tr>
+<td>Mains inlet</td>
+<td>Wall power in, with switch and fuse</td>
+<td>Not chosen</td>
+<td>12.00 estimate</td>
+<td>The donor's inlet, if reusable.</td>
+</tr>
+<tr>
+<td>Mains cord</td>
+<td>Wall socket to the inlet</td>
+<td>The donor printer's cord</td>
+<td>Included</td>
+<td>Any cord of the same plug type.</td>
+</tr>
+<tr>
+<td>Fuse block and fuses</td>
+<td>Splits 24 V into separately fused branches, one per converter and one for the motion controller</td>
+<td>Six-way blade fuse block, not chosen</td>
+<td>12.00 estimate</td>
+<td>Any blade-fuse block.</td>
+</tr>
+<tr>
+<td>Emergency stop</td>
+<td>Cuts power to everything that moves, by hand</td>
+<td>DFRobot FIT0156</td>
+<td>5.90 confirmed</td>
+<td>Any 22 mm emergency stop.</td>
+</tr>
+<tr>
+<td>12 V converter, computer</td>
+<td>Jetson and LED strips</td>
+<td>Pololu 4095 (D36V50F12), 4.5 A</td>
+<td>44.95 confirmed, backorder</td>
+<td>Generic step-down modules.</td>
+</tr>
+<tr>
+<td>12 V converter, servos</td>
+<td>The three tilt servos, through the bus adapter</td>
+<td>Pololu 2885 (D24V150F12), 15 A</td>
+<td>79.95 confirmed, backorder</td>
+<td>Pololu's newer D42V110F family; generic 10 A modules.</td>
+</tr>
+<tr>
+<td>6 V converter</td>
+<td>Marker actuator</td>
+<td>Pololu 3783 (D36V28F6), 2.7 A</td>
+<td>24.95 confirmed, backorder</td>
+<td>Any small 6 V module of 1 A or more.</td>
+</tr>
+<tr>
+<td>5 V converter</td>
+<td>Touchscreen and USB hub</td>
+<td>Pololu 4091 (D36V50F5), 5.5 A</td>
+<td>44.95 confirmed, backorder</td>
+<td>Generic step-down modules.</td>
+</tr>
+<tr>
+<td>LED strips</td>
+<td>Light the inside for the cameras</td>
+<td>Adafruit 4612, 1 m, × 2</td>
+<td>11.95 each confirmed</td>
+<td>Any 12 V white strip.</td>
+</tr>
+<tr>
+<td>LED channels and diffusers</td>
+<td>Hold the strips along the top rails and soften the light</td>
+<td>Aluminium channel with a frosted cover, about 1.8 m (no supplier chosen)</td>
+<td>In the wiring and fasteners lot</td>
+<td>Printed clips with a strip of frosted film.</td>
+</tr>
+<tr>
+<td>Power wire and connectors</td>
+<td>Join the supply, fuse block, converters and loads</td>
+<td>18 gauge for 24 V and servo power, 22 gauge elsewhere, with screw terminals or crimp connectors</td>
+<td>In the wiring and fasteners lot</td>
+<td>Pre-made leads where a part has a specific plug, such as the Jetson's barrel jack.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What to look for</strong></p>
+<ul>
+<li>
+<p><strong>Converters:</strong> together these cost about $195, and cheaper modules almost certainly exist. Each must accept at least 28 V in. The continuous ratings to meet are 4.5 A at 12 V for the computer side, 10 A at 12 V for the servos (their combined stall draw is 8.1 A), 1 A at 6 V for the marker actuator and 5 A at 5 V. Check for over-current protection and screw terminals.</p>
+</li>
+<li>
+<p><strong>Fuses:</strong> one per branch, sized just above that branch's peak current.</p>
+</li>
+<li>
+<p><strong>Emergency stop:</strong> it must have a normally-closed contact (the circuit breaks when pressed), a twist or pull release, and a contact rating for 24 V DC at 10 A or more. The current pick's page does not state its contact type.</p>
+</li>
+<li>
+<p><strong>LED strips:</strong> 12 V, about 1.8 m in total, neutral white. Even light matters more than brightness.</p>
+</li>
+<li>
+<p><strong>Power wire:</strong> thick enough for its branch, and flexible stranded wire on anything that moves.</p>
+</li>
+</ul>
+<h2 id="structure-and-version-specific-parts">Structure and version-specific parts</h2>
+<p>The enclosure is a frame of 20 mm aluminium extrusion with panels on the back and both sides, an open top, and a steep slanted panel over the arm opening that carries the touchscreen. It is 516 × 562 mm at the base and 590 mm tall. The computer and power parts hang on the outside of the back wall.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it does</th>
+<th>Current pick</th>
+<th>Price (USD)</th>
+<th>What to look for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aluminium extrusion, about 4.6 m</td>
+<td>Enclosure frame</td>
+<td>20 × 20 mm T-slot (no supplier chosen)</td>
+<td>50 estimate</td>
+<td>Cut-to-length service; the same slot size as the donor's extrusion.</td>
+</tr>
+<tr>
+<td>Corner brackets and slot nuts</td>
+<td>Join the extrusions at every corner</td>
+<td>Cast corner brackets with M5 screws and slot nuts, about 30 sets</td>
+<td>In the wiring and fasteners lot</td>
+<td>Brackets and nuts made for the same slot size as the extrusion.</td>
+</tr>
+<tr>
+<td>Wall panels (× 3)</td>
+<td>Close the back and both sides, keep hands out and the light even</td>
+<td>3 mm acrylic</td>
+<td>75 estimate with the front panel</td>
+<td>Cut-to-size service; a cheaper opaque sheet would also work.</td>
+</tr>
+<tr>
+<td>Slanted front panel</td>
+<td>Carries the touchscreen and the phone above the arm opening</td>
+<td>3 mm acrylic with cut-outs for the screen and the probe cable</td>
+<td>Counted with the wall panels</td>
+<td>A service that can cut the openings, or a printed panel in two halves.</td>
+</tr>
+<tr>
+<td>Base plate</td>
+<td>Everything bolts to it</td>
+<td>516 × 562 mm sheet</td>
+<td>25 estimate</td>
+<td>Flat and stiff; plywood or aluminium.</td>
+</tr>
+<tr>
+<td>Rubber feet (× 4)</td>
+<td>Stop the box sliding and damp vibration</td>
+<td>Stick-on or screw-on feet</td>
+<td>In the wiring and fasteners lot</td>
+<td>Feet tall enough to clear the screw heads under the base.</td>
+</tr>
+<tr>
+<td>Electronics shelf</td>
+<td>Holds the Jetson and motion controller on the outside of the back wall</td>
+<td>Printed or cut from sheet</td>
+<td>Filament</td>
+<td>Air must reach the Jetson's fan.</td>
+</tr>
+<tr>
+<td>Standoffs and mounting screws</td>
+<td>Fix each board and converter to the back wall</td>
+<td>M2.5 and M3 nylon standoffs</td>
+<td>In the wiring and fasteners lot</td>
+<td>Lengths of 6 to 10 mm, so nothing shorts against the panel.</td>
+</tr>
+<tr>
+<td>Cable grommets</td>
+<td>Line the holes where cables pass through the back wall and the front panel</td>
+<td>Rubber grommets, about six</td>
+<td>In the wiring and fasteners lot</td>
+<td>Inner hole wide enough for a USB plug.</td>
+</tr>
+<tr>
+<td>Cable tray</td>
+<td>Carries the fixed cable run along the back wall</td>
+<td>Printed in-house</td>
+<td>Filament</td>
+<td>None needed.</td>
+</tr>
+<tr>
+<td>Printing filament</td>
+<td>Gimbal, probe holder, cradles, brackets, shelf, cable tray</td>
+<td>1 kg</td>
+<td>20 estimate</td>
+<td>A material that does not creep under the servos' load.</td>
+</tr>
+<tr>
+<td>Wire, cable chain, fasteners</td>
+<td>50 wires in the current model, plus every small item marked as in this lot</td>
+<td>One lot</td>
+<td>50 estimate</td>
+<td>Flexible cable rated for repeated bending on the moving runs.</td>
+</tr>
+<tr>
+<td>Arm rest padding and strap</td>
+<td>Comfort and holding the arm still</td>
+<td>Foam and strap</td>
+<td>15 estimate</td>
+<td>Wipe-clean surface.</td>
+</tr>
+<tr>
+<td>Phone mount (Butterfly build)</td>
+<td>Holds the phone that shows the image</td>
+<td>Magnetic mount or charger</td>
+<td>39 estimate</td>
+<td>Whether it needs power, and what kind.</td>
+</tr>
+<tr>
+<td>Display unit and light box (Vscan build)</td>
+<td>The Vscan's own screen, enclosed so the camera reads it without glare</td>
+<td>The Vscan display unit in a printed box on the outside wall</td>
+<td>Filament</td>
+<td>Matte black inside, with a slot for the probe cable.</td>
+</tr>
+<tr>
+<td>Camera for the display (Vscan build)</td>
+<td>Reads the Vscan's screen inside the light box</td>
+<td>Arducam IMX219 for Jetson (SparkFun SEN-28170)</td>
+<td>19.95 confirmed</td>
+<td>Sharp focus at about 150 mm; a connector that matches the Jetson kit.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="problems-no-part-solves-yet">Problems no part solves yet</h2>
+<p>These need research as much as any part above. Getting the ultrasound image into the Jetson used to head this list and has been removed, because Butterfly confirmed in a meeting that its SDK streams imaging in real time to other devices.</p>
+<ul>
+<li>
+<p><strong>Ultrasound gel.</strong> The probe needs gel to see anything, and loose gel smears the ink mark. Research solid gel pads that clip over a probe face.</p>
+</li>
+<li>
+<p><strong>Putting Doppler and biplane to use.</strong> Telling artery from vein is no longer a missing capability, since the Butterfly has Doppler (which shows blood flow) and biplane imaging (two views at right angles at once). What remains is software and confirmation: whether those modes come through the SDK stream as data the Jetson can read, how fast the frames arrive in each mode, and how the vessel-finding model should use flow and the second view.</p>
+</li>
+<li>
+<p><strong>The Vscan build has no such stream.</strong> It still reads its image by camera from the display, so anything we build on Doppler or biplane data will work on the Butterfly build only unless GE offers an equivalent.</p>
+</li>
+<li>
+<p><strong>Servo slack is unmeasured.</strong> No supplier publishes it, so the first ST3215 that arrives should be tested before the other two are ordered.</p>
+</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<p>Servo and power pages opened on 24 Nov 2026: <a href="https://www.waveshare.com/st3215-servo.htm?sku=22414" target="_blank" rel="noopener">Waveshare ST3215</a>, <a href="https://www.waveshare.com/bus-servo-adapter-a.htm" target="_blank" rel="noopener">Waveshare Bus Servo Adapter (A)</a>, <a href="https://www.robotshop.com/products/robotis-dynamixel-xl430-w250-t-smart-servo-actuator" target="_blank" rel="noopener">RobotShop, Dynamixel XL430-W250-T</a>, <a href="https://emanual.robotis.com/docs/en/dxl/x/xl430-w250/" target="_blank" rel="noopener">ROBOTIS e-Manual, XL430-W250</a>, <a href="https://www.robotshop.com/products/sunfounder-sf3218mg-metal-gear-digital-servo-20kg-high-torque" target="_blank" rel="noopener">RobotShop, SunFounder SF3218MG</a>, <a href="https://www.pololu.com/product/2885" target="_blank" rel="noopener">Pololu 2885</a>, <a href="https://www.pololu.com/product/3783" target="_blank" rel="noopener">Pololu 3783</a>. The Butterfly SDK, Doppler and biplane points come from the team's meeting with Butterfly, not from a web page. Links for every other confirmed price are in the <a href="parts-list.html">parts list</a>.</p>
+</article>
+</div>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p><span class="dot" aria-hidden="true"></span>UltraVena · Team 7, Electrical and Systems Engineering, University of Pennsylvania</p>
+    <p class="small">A student research prototype. It is not a medical device and has not been tested on patients.</p>
+  </div>
+</footer>
+
+</body>
+</html>

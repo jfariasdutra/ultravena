@@ -1,0 +1,39 @@
+{
+  "tagline": "Ultrasound-guided cannulation for dialysis",
+  "lede": "UltraVena is a tabletop machine that scans a forearm with a motorised ultrasound probe, finds the fistula, and stamps an ink dot where the needle should go. Nothing pierces the skin.",
+  "stage": "Design stage. CAD version 6 is complete and nothing has been built yet.",
+  "stats": [
+    {"n": "6", "l": "axes of motion"},
+    {"n": "516 × 558 × 590", "l": "mm, fits a clinic table"},
+    {"n": "~7 N", "l": "most the probe can press, by estimate"},
+    {"n": "~$2,155", "l": "estimated build cost"}
+  ],
+  "steps": [
+    ["Arm in", "The user rests a forearm on the padded rest and the lights come on."],
+    ["Find the arm", "Two depth cameras build a 3D surface of the forearm."],
+    ["Pick a start", "The user taps a spot on the touchscreen."],
+    ["Touch down", "The probe tilts square to the skin and lowers until it feels light contact."],
+    ["Scan", "The probe steps along the arm while a model outlines the vessel in each image."],
+    ["Watch", "Three independent sensors check the arm has not moved."],
+    ["Choose", "Software picks the point from the vessel's depth, width and position."],
+    ["Mark", "The probe lifts, shifts, and a small actuator presses an ink tip onto the skin."]
+  ],
+  "status": [
+    ["Mechanical design", "done", "CAD version 6, checked for collisions across 579 poses"],
+    ["Parts list", "done", "Every part matched to a supplier listing, ready to order"],
+    ["Wiring plan", "done", "Power tree, data cables and pin plan written"],
+    ["Vessel model", "progress", "Version 2 works on generated images, waiting on real scans"],
+    ["Ultrasound link", "progress", "Butterfly confirmed real-time streaming, details to settle"],
+    ["Control software", "todo", "Planned, not yet written"],
+    ["Physical build", "todo", "Not started"],
+    ["Testing on an arm", "todo", "Not started"]
+  ],
+  "team": {
+    "intro": "UltraVena is the senior design project of Team 7 in Electrical and Systems Engineering at the University of Pennsylvania.",
+    "people": [
+      ["Jonathan Farias Dutra", "Team 7"],
+      ["Prof. Rahul Mangharam", "Faculty advisor"],
+      ["Dr. Sandeep Aggarwal", "Clinical advisor"]
+    ]
+  }
+}

@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wiring and Software · UltraVena</title>
+<meta name="description" content="What plugs into what, and which piece of software talks over each cable.">
+<meta property="og:title" content="Wiring and Software · UltraVena">
+<meta property="og:description" content="What plugs into what, and which piece of software talks over each cable.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/cad-iso.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="index.html"><span class="dot" aria-hidden="true"></span>UltraVena</a>
+    <input type="checkbox" id="menu" class="menu-toggle" aria-label="Open the menu">
+    <label for="menu" class="menu-btn" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="nav" aria-label="Main"><a href="index.html">Overview</a><a href="hardware.html">Hardware</a><a href="wiring-software.html" aria-current="page">Wiring &amp; Software</a><a href="parts-list.html">Parts List</a><a href="parts-research.html">Parts Research</a><a href="model.html">Vessel Model</a><a href="cad.html">3D Model</a><a href="updates.html">Updates</a><a href="downloads.html">Downloads</a></nav>
+  </div>
+</header>
+<main id="main">
+<div class="doc has-toc">
+<aside class="toc"><p class="toc-h">On this page</p><ol><li><a href="#at-a-glance">At a glance</a></li><li><a href="#power-wiring">Power wiring</a></li><li><a href="#data-and-signal-wiring">Data and signal wiring</a></li><li><a href="#teensy-pin-plan">Teensy pin plan</a></li><li><a href="#safety-wiring">Safety wiring</a></li><li><a href="#software">Software</a></li><li><a href="#messages-between-the-controllers">Messages between the controllers</a></li><li><a href="#one-scan-step-by-step">One scan, step by step</a></li><li><a href="#still-to-confirm-before-wiring">Still to confirm before wiring</a></li></ol></aside>
+<article class="prose">
+<header class="doc-head">
+<h1>Wiring and Software</h1>
+<p class="lede">What plugs into what, and which piece of software talks over each cable.</p>
+<p class="meta">Updated 24 Nov 2026 · <a href="assets/files/ultravena-wiring-software.pdf">Download as PDF</a></p>
+</header>
+<p>This is the map of what plugs into what in the UltraVena rig, and which piece of software talks over each cable. It matches CAD model version 6 and the current parts list.</p>
+<h2 id="at-a-glance">At a glance</h2>
+<figure class="diagram"><img loading="lazy" alt="Controller map: the Jetson, the USB hub and its four branches" class="diagram" src="assets/img/controller-map.png"><figcaption>Controller map: the Jetson, the USB hub and its four branches</figcaption></figure>
+<p>controller map · Jetson, USB hub and four branches</p>
+<p>The Jetson is the only thing that makes decisions. It talks to four things through one USB hub (the motion controller for the gantry, the servo adapter for the three tilt servos, the Teensy for the safety sensors, and the two depth cameras), and it never drives a motor or reads a sensor directly. The Teensy is highlighted because it is the one part that has to keep working even when the Jetson is busy or has crashed.</p>
+<h2 id="power-wiring">Power wiring</h2>
+<figure class="diagram"><img loading="lazy" alt="Power tree from the wall to every load" class="diagram" src="assets/img/power-tree.png"><figcaption>Power tree from the wall to every load</figcaption></figure>
+<p>power tree · wall to every load</p>
+<p>One 24 V supply feeds a fuse block with three branches. Two of them are always on (the computer side), and the third passes through the emergency stop before it reaches anything that can move.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Branch from the fuse block</th>
+<th>Wire</th>
+<th>Feeds</th>
+<th>Peak draw at 24 V (estimate)</th>
+<th>Fuse to fit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Computer 12 V</td>
+<td>18 gauge to the Pololu 4095</td>
+<td>Jetson barrel jack, then the LED strips (back strip first, jumpered to the left, right and front strips)</td>
+<td>1.6 A, about 35 W</td>
+<td>3 A</td>
+</tr>
+<tr>
+<td>Logic 5 V</td>
+<td>18 gauge to the Pololu 4091</td>
+<td>Touchscreen power, USB hub power, and the phone charging pad on the Butterfly build</td>
+<td>1 A, about 20 W</td>
+<td>2 A</td>
+</tr>
+<tr>
+<td>Motion, through the emergency stop</td>
+<td>18 gauge up to the stop button on the front panel and back to a small junction on the back wall</td>
+<td>Motion controller at 24 V (about 60 W), the 12 V servo converter (about 97 W with all three servos stalled) and the 6 V converter for the marker actuator (about 3 W)</td>
+<td>6.7 A, about 160 W</td>
+<td>10 A</td>
+</tr>
+</tbody>
+</table></div>
+<p>The three add up to about 215 W at the loads, or roughly 245 W from the supply once converter losses are counted, against a 350 W rating.</p>
+<p>Everything else takes its power from one of those. The Teensy, the servo bus adapter's logic, the motion controller's logic and both depth cameras are powered through their USB cables. The load cell amplifier, tilt sensor, wrist band sensor and pressure pads all run from the Teensy's 3.3 V pin. The three servos take 12 V down the same chained cable that carries their data.</p>
+<h2 id="data-and-signal-wiring">Data and signal wiring</h2>
+<p>Every cable that carries information, grouped by the controller it lands on. The Butterfly and Vscan builds differ only in the last three rows.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Cable</th>
+<th>What travels on it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jetson USB port</td>
+<td>USB hub</td>
+<td>USB 3</td>
+<td>Everything below that goes through the hub</td>
+</tr>
+<tr>
+<td>Jetson HDMI port</td>
+<td>Touchscreen</td>
+<td>HDMI</td>
+<td>The screen picture</td>
+</tr>
+<tr>
+<td>USB hub</td>
+<td>Touchscreen</td>
+<td>USB</td>
+<td>Finger taps</td>
+</tr>
+<tr>
+<td>USB hub</td>
+<td>Depth camera 1 (front left)</td>
+<td>USB 3</td>
+<td>Depth and colour frames</td>
+</tr>
+<tr>
+<td>USB hub</td>
+<td>Depth camera 2 (back right)</td>
+<td>USB 3</td>
+<td>Depth and colour frames</td>
+</tr>
+<tr>
+<td>USB hub</td>
+<td>Motion controller</td>
+<td>USB</td>
+<td>Move commands out, position and status back</td>
+</tr>
+<tr>
+<td>USB hub</td>
+<td>Servo bus adapter</td>
+<td>USB</td>
+<td>Target angles out, true angle, load and temperature back</td>
+</tr>
+<tr>
+<td>USB hub</td>
+<td>Teensy</td>
+<td>USB</td>
+<td>Sensor readings and alarms in, marker and threshold commands out</td>
+</tr>
+<tr>
+<td>Motion controller, X driver</td>
+<td>X stepper motor</td>
+<td>4-wire motor lead through the cable chain</td>
+<td>Motor current</td>
+</tr>
+<tr>
+<td>Motion controller, Y driver</td>
+<td>Left Y stepper motor</td>
+<td>4-wire motor lead along the base</td>
+<td>Motor current</td>
+</tr>
+<tr>
+<td>Motion controller, spare (extruder) driver</td>
+<td>Right Y stepper motor</td>
+<td>4-wire motor lead along the base</td>
+<td>Motor current, mirrored from the left Y motor in firmware</td>
+</tr>
+<tr>
+<td>Motion controller, Z driver</td>
+<td>Z stepper motor</td>
+<td>4-wire motor lead through the cable chain</td>
+<td>Motor current</td>
+</tr>
+<tr>
+<td>Motion controller, X, Y and Z switch inputs</td>
+<td>Three home switches</td>
+<td>2-wire leads</td>
+<td>Closed or open, read once at startup to find zero</td>
+</tr>
+<tr>
+<td>Servo bus adapter</td>
+<td>Yaw servo, then pitch, then roll</td>
+<td>One 3-wire servo cable chained from servo to servo</td>
+<td>12 V, ground and a single two-way data line</td>
+</tr>
+<tr>
+<td>Teensy</td>
+<td>Load cell amplifier on the head</td>
+<td>4-wire lead through the cable chain</td>
+<td>3.3 V, ground, clock and data</td>
+</tr>
+<tr>
+<td>Load cell amplifier</td>
+<td>Load cell</td>
+<td>The load cell's own 4 fine wires, a few centimetres</td>
+<td>The raw force signal</td>
+</tr>
+<tr>
+<td>Teensy</td>
+<td>Lift switch on the floating head</td>
+<td>2-wire lead through the cable chain</td>
+<td>Closed normally, opens when the head starts to float</td>
+</tr>
+<tr>
+<td>Teensy</td>
+<td>Tilt sensor on the probe holder</td>
+<td>3-wire lead through the cable chain</td>
+<td>3.3 V, ground and one serial data line</td>
+</tr>
+<tr>
+<td>Teensy</td>
+<td>Wrist band socket on the arm rest</td>
+<td>3-wire lead along the base</td>
+<td>3.3 V, ground and one serial data line</td>
+</tr>
+<tr>
+<td>Teensy</td>
+<td>Six pressure pads under the arm</td>
+<td>Six 2-wire leads along the base</td>
+<td>A voltage that rises as the arm presses down</td>
+</tr>
+<tr>
+<td>Teensy</td>
+<td>Marker actuator</td>
+<td>1 signal wire, alongside the 6 V pair from the converter</td>
+<td>A servo-style pulse that sets how far the tip extends</td>
+</tr>
+<tr>
+<td>Butterfly probe</td>
+<td>Phone on the front panel</td>
+<td>The probe's own cable, through the slot in the slanted panel</td>
+<td>The ultrasound data, into the Butterfly app</td>
+</tr>
+<tr>
+<td>Phone (Butterfly build)</td>
+<td>Jetson</td>
+<td>Butterfly SDK stream, route to confirm with Butterfly</td>
+<td>Live ultrasound frames</td>
+</tr>
+<tr>
+<td>Vscan probe, then display unit camera (Vscan build)</td>
+<td>Jetson camera connector</td>
+<td>The probe's own cable to the display unit, then a ribbon cable from the camera in the light box</td>
+<td>A video of the Vscan's screen</td>
+</tr>
+</tbody>
+</table></div>
+<p>The hub ends up with six of its seven ports used. Nine separate leads run through the cable chain to the moving parts (two motor leads, the X and Z home switches, the servo cable, and four leads to the head for the amplifier, lift switch, tilt sensor and marker), plus the probe's own cable which hangs free.</p>
+<h2 id="teensy-pin-plan">Teensy pin plan</h2>
+<p>This is a proposed assignment, chosen so that nothing shares a pin and two pins stay free. The Teensy is a 3.3 V board and none of its pins tolerate 5 V, so every sensor below is powered from its 3.3 V pin.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Teensy pin</th>
+<th>Connects to</th>
+<th>Direction</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>USB</td>
+<td>Hub</td>
+<td>Both</td>
+<td>Power and the link to the Jetson</td>
+</tr>
+<tr>
+<td>3.3 V and ground</td>
+<td>Amplifier, tilt sensor, wrist band socket, pressure pads</td>
+<td>Out</td>
+<td>About 60 mA in total, well inside the pin's 250 mA</td>
+</tr>
+<tr>
+<td>0 (serial 1 receive)</td>
+<td>Tilt sensor data</td>
+<td>In</td>
+<td>The sensor's simple serial mode, 100 readings a second</td>
+</tr>
+<tr>
+<td>7 (serial 2 receive)</td>
+<td>Wrist band sensor data</td>
+<td>In</td>
+<td>Same mode, through the socket on the arm rest</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Load cell amplifier data</td>
+<td>In</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Load cell amplifier clock</td>
+<td>Out</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Lift switch</td>
+<td>In, with the internal pull-up</td>
+<td>Wired so a broken wire reads the same as a lifted head</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Marker actuator signal</td>
+<td>Out</td>
+<td>Servo-style pulse, 1 to 2 ms</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Stop line to the motion controller</td>
+<td>Out</td>
+<td>Not in the CAD yet, see Safety wiring</td>
+</tr>
+<tr>
+<td>14 to 19 (analog 0 to 5)</td>
+<td>Pressure pads 1 to 6</td>
+<td>In</td>
+<td>Each pad sits between 3.3 V and its pin, with a 10 kΩ resistor from the pin to ground</td>
+</tr>
+<tr>
+<td>20 to 23</td>
+<td>Spare</td>
+<td></td>
+<td>Four analog-capable pins for later</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="safety-wiring">Safety wiring</h2>
+<p>There are three layers, and they are deliberately independent of each other.</p>
+<ol>
+<li>
+<p><strong>The floating head.</strong> No wire at all. The head lifts on its rods if the probe is pushed up, so it can never press harder than its own weight (about 7 N by estimate).</p>
+</li>
+<li>
+<p><strong>The emergency stop.</strong> A hardware cut. Pressing it breaks the 24 V feed to the motion controller, the servo converter and the marker converter, so the motors and servos go limp at once. The Jetson, Teensy, cameras and screen stay on, which lets the screen explain what happened.</p>
+</li>
+<li>
+<p><strong>The Teensy's watch loop.</strong> Software, but on its own processor. A thousand times a second it checks the load cell, the lift switch, the wrist band and the pressure pads, and raises an alarm if any of them crosses its limit.</p>
+</li>
+</ol>
+<p>The weak point in the current wiring is what happens after the Teensy raises that alarm. As modelled, the alarm travels over USB to the Jetson, and the Jetson then tells the motion controller and servos to stop, so a frozen Jetson would mean a missed stop. The fix is one extra wire from Teensy pin 6 to the motion controller's pause or kill input (or to a small relay in series with the emergency stop), so the Teensy can halt motion by itself. It costs almost nothing and should be added before the first test on a person.</p>
+<h2 id="software">Software</h2>
+<p>Three processors run code, and each owns a different timescale. None of this is written yet, so the languages and libraries below are the proposed starting point.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Runs on</th>
+<th>Program</th>
+<th>What it owns</th>
+<th>How fast</th>
+<th>Proposed tools</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jetson</td>
+<td>Touchscreen app</td>
+<td>Start, stop, picking the start site on the camera view, progress, alarms</td>
+<td>Redraws about 30 times a second</td>
+<td>Python with a simple full-screen interface toolkit</td>
+</tr>
+<tr>
+<td>Jetson</td>
+<td>Arm tracker</td>
+<td>Reads both depth cameras, finds the printed markers, builds the forearm surface, reports if the arm has shifted</td>
+<td>About 15 to 30 frames a second</td>
+<td>Python, RealSense library, OpenCV marker detection</td>
+</tr>
+<tr>
+<td>Jetson</td>
+<td>Ultrasound reader</td>
+<td>Receives live frames from the Butterfly SDK stream (or grabs the Vscan screen from the camera)</td>
+<td>As fast as frames arrive</td>
+<td>Butterfly SDK, details to confirm</td>
+</tr>
+<tr>
+<td>Jetson</td>
+<td>Vessel model</td>
+<td>Outlines the vessel in each frame and measures its depth and width</td>
+<td>Target of 10 frames a second or better</td>
+<td>The team's U-Net, run with the Jetson's graphics acceleration</td>
+</tr>
+<tr>
+<td>Jetson</td>
+<td>Scan planner</td>
+<td>Decides the next pose of all six axes from the arm surface and the last image, and picks the cannulation point at the end</td>
+<td>Once per scan step</td>
+<td>Python</td>
+</tr>
+<tr>
+<td>Jetson</td>
+<td>Motion coordinator</td>
+<td>Sends each pose to the gantry and the servos together, waits until both report arrived, then asks for the tilt correction</td>
+<td>Once per scan step</td>
+<td>Python, serial link to the controller, Feetech servo library</td>
+</tr>
+<tr>
+<td>Motion controller</td>
+<td>Stepper firmware</td>
+<td>Turns each move command into smooth, timed steps on four motors, and homes the axes</td>
+<td>Thousands of steps a second</td>
+<td>Open printer firmware (Marlin or Klipper), with the second Y motor set to mirror the first</td>
+</tr>
+<tr>
+<td>Teensy</td>
+<td>Safety firmware</td>
+<td>Reads the force, lift, wrist and pad sensors, compares them to limits, raises alarms, and drives the marker</td>
+<td>1,000 checks a second</td>
+<td>C++ in the Arduino environment</td>
+</tr>
+</tbody>
+</table></div>
+<p>The six axes stay in step by moving in short hops and never trying to glide. For each scan step the coordinator sends the gantry its X, Y and Z target and the servos their three angles at the same moment, waits for the controller to report the move finished and for the servos to report their true angles, reads the tilt sensor as a cross-check, nudges pitch and roll if they are off, and only then lets the ultrasound reader take the frame. That removes any need for the two motion systems to share a clock.</p>
+<h2 id="messages-between-the-controllers">Messages between the controllers</h2>
+<p>Each USB link carries a small, fixed set of messages. Keeping the set this small is what lets each program be written and tested alone.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Link</th>
+<th>The Jetson sends</th>
+<th>It gets back</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jetson to motion controller</td>
+<td>Home all axes. Move to X, Y, Z at a given speed. Stop now.</td>
+<td>Current position, move finished, home switch states, errors</td>
+</tr>
+<tr>
+<td>Jetson to servo bus adapter</td>
+<td>Go to yaw, pitch and roll angles at a given speed. Go limp.</td>
+<td>True angle, load, temperature and voltage for each servo</td>
+</tr>
+<tr>
+<td>Jetson to Teensy</td>
+<td>Set the force, lift and movement limits. Arm or disarm the watch loop. Lower the marker by a set distance, then raise it.</td>
+<td>Force on the probe, lift switch state, tilt angles, wrist motion, six pad readings, and an alarm naming whichever limit was crossed</td>
+</tr>
+<tr>
+<td>Depth cameras to Jetson</td>
+<td>Nothing beyond settings at startup</td>
+<td>Depth and colour frames</td>
+</tr>
+<tr>
+<td>Butterfly SDK to Jetson</td>
+<td>Imaging mode and depth settings, if the SDK allows it</td>
+<td>Live frames, and Doppler or biplane frames if the stream carries them</td>
+</tr>
+<tr>
+<td>Jetson to touchscreen</td>
+<td>The picture</td>
+<td>Tap positions</td>
+</tr>
+</tbody>
+</table></div>
+<p>The Teensy also sends a short heartbeat ten times a second. If the Jetson stops hearing it, the Jetson stops the scan, and if the Teensy stops hearing the Jetson, it treats that as an alarm.</p>
+<h2 id="one-scan-step-by-step">One scan, step by step</h2>
+<ol>
+<li>
+<p><strong>Power on.</strong> The motion controller homes X, Y and Z against their switches, the servos report their angles, and the Teensy zeroes the load cell with the probe hanging free.</p>
+</li>
+<li>
+<p><strong>Arm in.</strong> The arm tracker finds the four printed markers and builds the forearm surface, and the touchscreen app shows the camera view.</p>
+</li>
+<li>
+<p><strong>Pick a start.</strong> The user taps a spot. The app turns the tap into a point on the arm surface and hands it to the scan planner.</p>
+</li>
+<li>
+<p><strong>Arm the watch loop.</strong> The Jetson tells the Teensy to start checking limits, and the wrist band and pad readings at this moment become the baseline for "the arm has not moved".</p>
+</li>
+<li>
+<p><strong>Touch down.</strong> The coordinator moves the probe above the start point, tilts it square to the surface, and lowers Z in small steps while the Teensy reports force, stopping at light contact.</p>
+</li>
+<li>
+<p><strong>Scan.</strong> For each step along the arm the coordinator moves all six axes, waits, corrects tilt, and the ultrasound reader takes a frame. The vessel model outlines the vessel and the planner uses that outline to keep the next step centred on it.</p>
+</li>
+<li>
+<p><strong>Choose the point.</strong> The planner scores every step by vessel depth, width and straightness and picks the best one.</p>
+</li>
+<li>
+<p><strong>Mark it.</strong> The coordinator lifts the probe, shifts the gantry by the marker offset (48.5 mm on the Butterfly build, 44 mm on the Vscan), and the Jetson asks the Teensy to lower the marker until it touches, then raise it.</p>
+</li>
+<li>
+<p><strong>Finish.</strong> The head returns to its parked position, the Teensy disarms, and the screen shows the result.</p>
+</li>
+</ol>
+<p>At any point from step 4 onward, a Teensy alarm, a lost heartbeat, a tracker report that the arm shifted, or a tap on Stop ends the scan, lifts the probe and parks the head. The emergency stop works regardless of all of it.</p>
+<h2 id="still-to-confirm-before-wiring">Still to confirm before wiring</h2>
+<ul class="tasks">
+<li class="task">
+<p><span class="box" aria-hidden="true"></span><strong>Teensy stop line.</strong> Add the wire from Teensy pin 6 to the motion controller's pause or kill input, and find which input the donor board offers.</p>
+</li>
+<li class="task">
+<p><span class="box" aria-hidden="true"></span><strong>Emergency stop rating.</strong> Its contact carries up to about 6.7 A and is rated 10 A. Confirm it is a normally-closed contact, and consider a separate small fuse after it for each of the three loads.</p>
+</li>
+<li class="task">
+<p><span class="box" aria-hidden="true"></span><strong>Donor controller.</strong> Confirm the Ender-3 V3 SE board can be reflashed, can run its extruder driver as a second Y motor, and has a free input for the stop line.</p>
+</li>
+<li class="task">
+<p><span class="box" aria-hidden="true"></span><strong>Butterfly SDK route.</strong> Whether the Jetson receives the stream directly or through the phone, the delay, and whether Doppler and biplane frames are included.</p>
+</li>
+<li class="task">
+<p><span class="box" aria-hidden="true"></span><strong>Servo adapter over USB.</strong> Confirm the Waveshare adapter shows up as a plain serial port on the Jetson and that the servo library runs there.</p>
+</li>
+<li class="task">
+<p><span class="box" aria-hidden="true"></span><strong>3.3 V signals.</strong> Confirm the marker actuator responds to a 3.3 V pulse from the Teensy.</p>
+</li>
+<li class="task">
+<p><span class="box" aria-hidden="true"></span><strong>Long sensor leads.</strong> The tilt sensor and wrist band sit over a metre of moving cable from the Teensy, so test the serial mode at full length before closing up the cable chain.</p>
+</li>
+<li class="task">
+<p><span class="box" aria-hidden="true"></span><strong>Hub power.</strong> Two depth cameras can draw close to an amp between them, so confirm the hub's own supply covers all six devices from the 5 V converter.</p>
+</li>
+</ul>
+<p>Part numbers and prices are in the <a href="parts-list.html">parts list</a>, and what each part does is in the <a href="parts-research.html">parts research brief</a>.</p>
+</article>
+</div>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p><span class="dot" aria-hidden="true"></span>UltraVena · Team 7, Electrical and Systems Engineering, University of Pennsylvania</p>
+    <p class="small">A student research prototype. It is not a medical device and has not been tested on patients.</p>
+  </div>
+</footer>
+
+</body>
+</html>

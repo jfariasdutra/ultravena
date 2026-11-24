@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Updates · UltraVena</title>
+<meta name="description" content="What changed and when, newest first.">
+<meta property="og:title" content="Updates · UltraVena">
+<meta property="og:description" content="What changed and when, newest first.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/cad-iso.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="index.html"><span class="dot" aria-hidden="true"></span>UltraVena</a>
+    <input type="checkbox" id="menu" class="menu-toggle" aria-label="Open the menu">
+    <label for="menu" class="menu-btn" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="nav" aria-label="Main"><a href="index.html">Overview</a><a href="hardware.html">Hardware</a><a href="wiring-software.html">Wiring &amp; Software</a><a href="parts-list.html">Parts List</a><a href="parts-research.html">Parts Research</a><a href="model.html">Vessel Model</a><a href="cad.html">3D Model</a><a href="updates.html" aria-current="page">Updates</a><a href="downloads.html">Downloads</a></nav>
+  </div>
+</header>
+<main id="main">
+<div class="doc has-toc">
+<aside class="toc"><p class="toc-h">On this page</p><ol><li><a href="#24-nov-2026-project-site-goes-up">24 Nov 2026 · Project site goes up</a></li><li><a href="#24-nov-2026-cad-version-6-feedback-servos">24 Nov 2026 · CAD version 6, feedback servos</a></li><li><a href="#24-nov-2026-butterfly-confirms-real-time-streaming">24 Nov 2026 · Butterfly confirms real-time streaming</a></li><li><a href="#24-nov-2026-cad-version-5-floating-head-and-linear-rail">24 Nov 2026 · CAD version 5, floating head and linear rail</a></li><li><a href="#24-nov-2026-cad-version-4-second-design-audit">24 Nov 2026 · CAD version 4, second design audit</a></li><li><a href="#23-nov-2026-cad-version-3-first-motion-sweep">23 Nov 2026 · CAD version 3, first motion sweep</a></li><li><a href="#23-nov-2026-first-parts-list">23 Nov 2026 · First parts list</a></li><li><a href="#nov-2026-enclosure-design">Nov 2026 · Enclosure design</a></li><li><a href="#nov-2026-marker-instead-of-needle">Nov 2026 · Marker instead of needle</a></li></ol></aside>
+<article class="prose">
+<header class="doc-head">
+<h1>Updates</h1>
+<p class="lede">What changed and when, newest first.</p>
+<p class="meta">Updated 24 Nov 2026</p>
+</header>
+<h2 id="24-nov-2026-project-site-goes-up">24 Nov 2026 · Project site goes up</h2>
+<p>This site now holds the hardware brief, the wiring and software plan, the parts list, the parts research brief, the vessel model page and a live 3D view of the CAD model.</p>
+<h2 id="24-nov-2026-cad-version-6-feedback-servos">24 Nov 2026 · CAD version 6, feedback servos</h2>
+<p>The three hobby servos were replaced by Waveshare ST3215 bus servos, which report their true angle and share one chained cable. The servo driver board became a bus adapter, the servos got their own 12 V converter, and the marker actuator got a small 6 V converter. The parts list total rose by about $25 to roughly $2,155.</p>
+<h2 id="24-nov-2026-butterfly-confirms-real-time-streaming">24 Nov 2026 · Butterfly confirms real-time streaming</h2>
+<p>In a meeting with the team, Butterfly confirmed that its SDK can stream imaging in real time to other devices. That removes what had been the largest open problem in the Butterfly version, which was getting the image into the computer. Butterfly probes also offer Doppler and biplane imaging.</p>
+<h2 id="24-nov-2026-cad-version-5-floating-head-and-linear-rail">24 Nov 2026 · CAD version 5, floating head and linear rail</h2>
+<p>The probe head now hangs on two guide rods and lifts freely if pushed, so it can never press harder than its own weight. The Z slide moved onto a linear rail to resist the twist from the overhanging head.</p>
+<h2 id="24-nov-2026-cad-version-4-second-design-audit">24 Nov 2026 · CAD version 4, second design audit</h2>
+<p>A dedicated second Y motor was added after finding that the donor printer's fourth motor cannot drive a belt. The load cell amplifier moved onto the head, and limit switches were added to the list.</p>
+<h2 id="23-nov-2026-cad-version-3-first-motion-sweep">23 Nov 2026 · CAD version 3, first motion sweep</h2>
+<p>Sweeping the model through its full range showed the yoke hitting the Z rail before yaw reached 90°, so the reach bracket grew from 70 to 116 mm. The marker solenoid was replaced by a linear actuator with enough travel.</p>
+<h2 id="23-nov-2026-first-parts-list">23 Nov 2026 · First parts list</h2>
+<p>Every part was matched to a real supplier listing with a part number and price.</p>
+<h2 id="nov-2026-enclosure-design">Nov 2026 · Enclosure design</h2>
+<p>The open gantry became a three-walled enclosure with a slanted front panel for the touchscreen and phone, and the electronics moved to the outside of the back wall.</p>
+<h2 id="nov-2026-marker-instead-of-needle">Nov 2026 · Marker instead of needle</h2>
+<p>The design changed from inserting a needle to stamping an ink dot, which proves the system can find and hit the right point without piercing skin.</p>
+</article>
+</div>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p><span class="dot" aria-hidden="true"></span>UltraVena · Team 7, Electrical and Systems Engineering, University of Pennsylvania</p>
+    <p class="small">A student research prototype. It is not a medical device and has not been tested on patients.</p>
+  </div>
+</footer>
+
+</body>
+</html>

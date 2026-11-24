@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vessel Model · UltraVena</title>
+<meta name="description" content="The image model that outlines the vessel in each ultrasound frame, and where it stands.">
+<meta property="og:title" content="Vessel Model · UltraVena">
+<meta property="og:description" content="The image model that outlines the vessel in each ultrasound frame, and where it stands.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/cad-iso.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="index.html"><span class="dot" aria-hidden="true"></span>UltraVena</a>
+    <input type="checkbox" id="menu" class="menu-toggle" aria-label="Open the menu">
+    <label for="menu" class="menu-btn" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="nav" aria-label="Main"><a href="index.html">Overview</a><a href="hardware.html">Hardware</a><a href="wiring-software.html">Wiring &amp; Software</a><a href="parts-list.html">Parts List</a><a href="parts-research.html">Parts Research</a><a href="model.html" aria-current="page">Vessel Model</a><a href="cad.html">3D Model</a><a href="updates.html">Updates</a><a href="downloads.html">Downloads</a></nav>
+  </div>
+</header>
+<main id="main">
+<div class="doc has-toc">
+<aside class="toc"><p class="toc-h">On this page</p><ol><li><a href="#what-it-is">What it is</a></li><li><a href="#where-it-stands">Where it stands</a></li><li><a href="#results-so-far">Results so far</a></li><li><a href="#what-comes-next">What comes next</a></li><li><a href="#the-labelling-dashboard">The labelling dashboard</a></li></ol></aside>
+<article class="prose">
+<header class="doc-head">
+<h1>Vessel Model</h1>
+<p class="lede">The image model that outlines the vessel in each ultrasound frame, and where it stands.</p>
+<p class="meta">Updated 24 Nov 2026</p>
+</header>
+<p>The vessel model is the piece of software that looks at each ultrasound frame and outlines the vessel in it. Everything the machine decides afterwards (how deep the vessel is, how wide, where the best cannulation point lies) is measured from that outline.</p>
+<h2 id="what-it-is">What it is</h2>
+<p>The model is a U-Net, a kind of neural network built for outlining shapes in medical images. It takes one greyscale ultrasound frame and returns a mask, a same-sized picture in which every pixel is marked as vessel or not vessel. The current version (version 2) has about 1.8 million weights, which is small enough to run many times a second on the Jetson.</p>
+<h2 id="where-it-stands">Where it stands</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Architecture</td>
+<td>U-Net, from the team's own notebook</td>
+</tr>
+<tr>
+<td>Current version</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Training images</td>
+<td>Computer-generated images that imitate ultrasound</td>
+</tr>
+<tr>
+<td>Real scans in training</td>
+<td>None yet. The team's own scans have not been exported from the ultrasound.</td>
+</tr>
+<tr>
+<td>Runs in the browser</td>
+<td>Yes, inside the labelling dashboard</td>
+</tr>
+<tr>
+<td>Runs on the Jetson</td>
+<td>Not tested yet</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="results-so-far">Results so far</h2>
+<p>Version 2 was tested on 150 computer-generated images it had never seen, 24 of which contained no vessel at all.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Average overlap between its outline and the true one (IoU)</td>
+<td>0.97</td>
+</tr>
+<tr>
+<td>Images where the overlap was 0.80 or better</td>
+<td>99%</td>
+</tr>
+<tr>
+<td>Vessels it found</td>
+<td>99.5%</td>
+</tr>
+<tr>
+<td>Outlines it drew that were real vessels</td>
+<td>99%</td>
+</tr>
+<tr>
+<td>False alarms on the 24 vessel-free images</td>
+<td>0</td>
+</tr>
+</tbody>
+</table></div>
+<p>These numbers show that the training and testing pipeline works. They do not show how the model will do on real arms, because it has not seen one. Expect the figures to drop when real scans arrive, and expect that to be the point where the real work on the model starts.</p>
+<h2 id="what-comes-next">What comes next</h2>
+<ul>
+<li>Export the team's own scans and label them in the dashboard.</li>
+<li>Retrain on real images and report results on real images only.</li>
+<li>Use the Butterfly's Doppler mode (which shows blood flow) to tell artery from vein, and its biplane mode (two views at right angles) to judge vessel direction, once the team confirms those frames come through the SDK stream.</li>
+<li>Measure speed on the Jetson, with a target of 10 frames a second or better.</li>
+</ul>
+<h2 id="the-labelling-dashboard">The labelling dashboard</h2>
+<p>The team has a separate dashboard for uploading scans, filtering them by device, drawing vessel outlines by hand and running the model on them. It lives apart from this site for now.</p>
+</article>
+</div>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p><span class="dot" aria-hidden="true"></span>UltraVena · Team 7, Electrical and Systems Engineering, University of Pennsylvania</p>
+    <p class="small">A student research prototype. It is not a medical device and has not been tested on patients.</p>
+  </div>
+</footer>
+
+</body>
+</html>

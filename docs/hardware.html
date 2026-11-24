@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hardware Brief · UltraVena</title>
+<meta name="description" content="The design as it stands in CAD version 6, why it is built this way, and how the two probe versions differ.">
+<meta property="og:title" content="Hardware Brief · UltraVena">
+<meta property="og:description" content="The design as it stands in CAD version 6, why it is built this way, and how the two probe versions differ.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/cad-iso.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="index.html"><span class="dot" aria-hidden="true"></span>UltraVena</a>
+    <input type="checkbox" id="menu" class="menu-toggle" aria-label="Open the menu">
+    <label for="menu" class="menu-btn" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="nav" aria-label="Main"><a href="index.html">Overview</a><a href="hardware.html" aria-current="page">Hardware</a><a href="wiring-software.html">Wiring &amp; Software</a><a href="parts-list.html">Parts List</a><a href="parts-research.html">Parts Research</a><a href="model.html">Vessel Model</a><a href="cad.html">3D Model</a><a href="updates.html">Updates</a><a href="downloads.html">Downloads</a></nav>
+  </div>
+</header>
+<main id="main">
+<div class="doc has-toc">
+<aside class="toc"><p class="toc-h">On this page</p><ol><li><a href="#the-machine-in-one-view">The machine in one view</a></li><li><a href="#size-and-reach">Size and reach</a></li><li><a href="#the-gantry">The gantry</a></li><li><a href="#the-probe-head">The probe head</a></li><li><a href="#the-enclosure">The enclosure</a></li><li><a href="#sensing">Sensing</a></li><li><a href="#design-choices">Design choices</a></li><li><a href="#butterfly-and-vscan-versions">Butterfly and Vscan versions</a></li><li><a href="#how-the-design-got-here">How the design got here</a></li><li><a href="#known-limits-and-open-questions">Known limits and open questions</a></li></ol></aside>
+<article class="prose">
+<header class="doc-head">
+<h1>Hardware Brief</h1>
+<p class="lede">The design as it stands in CAD version 6, why it is built this way, and how the two probe versions differ.</p>
+<p class="meta">Updated 24 Nov 2026 · <a href="assets/files/ultravena-hardware-brief.pdf">Download as PDF</a></p>
+</header>
+<p>UltraVena is a tabletop enclosure that scans a forearm with a motorised ultrasound probe and stamps an ink dot where a dialysis needle should go. This brief describes the hardware as it stands in CAD model version 6, why it is built this way, and how the Butterfly iQ3 and GE Vscan Extend versions differ.</p>
+<h2 id="the-machine-in-one-view">The machine in one view</h2>
+<figure class="diagram"><img loading="lazy" alt="Side view of the rig, Butterfly version, probe raised" class="diagram" src="assets/img/side-view.png"><figcaption>Side view of the rig, Butterfly version, probe raised</figcaption></figure>
+<p>The user sits at the open front and slides a forearm under the slanted panel onto a padded rest. Overhead, a bridge rides front to back on two side rails, a carriage runs across it, and a vertical slide hangs from the carriage, which together give the probe its three straight-line motions. At the bottom of that slide a three-servo gimbal tilts and spins the probe. Two depth cameras watch the arm from opposite corners, and every board and power part hangs on the outside of the back wall so that nothing inside is in the way of the gantry.</p>
+<h2 id="size-and-reach">Size and reach</h2>
+<p>The enclosure is 516 mm wide, 558 mm deep and 590 mm tall, small enough for a clinic table. The six axes and their travel, as checked in a 579-pose sweep of the CAD model with no collisions, are below.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Axis</th>
+<th>What moves</th>
+<th>Driven by</th>
+<th>Travel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Y, along the arm</td>
+<td>The whole bridge</td>
+<td>Two stepper motors, one belt per side</td>
+<td>210 mm</td>
+</tr>
+<tr>
+<td>X, across the arm</td>
+<td>The carriage on the bridge</td>
+<td>One stepper motor and a belt</td>
+<td>160 mm (80 mm each side of centre)</td>
+</tr>
+<tr>
+<td>Z, up and down</td>
+<td>The slide on the carriage</td>
+<td>One stepper motor and a lead screw</td>
+<td>90 mm</td>
+</tr>
+<tr>
+<td>Yaw, spin about the probe's own axis</td>
+<td>The yoke</td>
+<td>Servo 1</td>
+<td>90° each way</td>
+</tr>
+<tr>
+<td>Pitch, tilt along the arm</td>
+<td>The ring inside the yoke</td>
+<td>Servo 2</td>
+<td>30° each way</td>
+</tr>
+<tr>
+<td>Roll, tilt across the arm</td>
+<td>The probe holder inside the ring</td>
+<td>Servo 3</td>
+<td>20° each way</td>
+</tr>
+</tbody>
+</table></div>
+<p>The three tilt axes all pass through one point 55 mm above the probe face. Because of that, tilting the probe to sit square on a curved arm barely moves the face sideways, and what little it does move is corrected by X and Y.</p>
+<h2 id="the-gantry">The gantry</h2>
+<p>The gantry is a 3D printer rebuilt as a bridge. A Creality Ender-3 V3 SE is taken apart for its motors, belts, pulleys, lead screw, controller board and 24 V supply, and those parts are remounted on a frame of 20 mm aluminium extrusion.</p>
+<ul>
+<li>
+<p><strong>Y axis.</strong> Two side rails run front to back, 185 mm either side of centre and 400 mm above the base. The bridge spans them and is pulled by a belt on each side, each with its own motor, so the bridge cannot skew. The donor printer only supplies three usable motors (its fourth is a short geared extruder motor), so one matching motor is bought separately.</p>
+</li>
+<li>
+<p><strong>X axis.</strong> A carriage rolls along the bridge on wheels, pulled by a single belt.</p>
+</li>
+<li>
+<p><strong>Z axis.</strong> A linear rail (MGN12 with two long carriages) is bolted upright to the carriage, and a lead screw from the Z motor raises and lowers a slide plate on it. The rail matters because the probe hangs 116 mm in front of the slide, and that overhang would twist a simpler sliding block.</p>
+</li>
+<li>
+<p><strong>Homing.</strong> Each axis has a roller-lever switch that gives it a known zero at power-on.</p>
+</li>
+<li>
+<p><strong>Cabling.</strong> The moving wires travel in a cable chain from the back wall to the bridge, then arch across to the carriage and down the slide.</p>
+</li>
+</ul>
+<h2 id="the-probe-head">The probe head</h2>
+<p>The head is everything that hangs from the Z slide. From top to bottom it is built in this order, and each layer exists for one reason.</p>
+<ol>
+<li>
+<p><strong>Reach bracket.</strong> Carries the head 116 mm forward of the Z rail, so the yoke can spin a full 90° each way without hitting the rail or the carriage.</p>
+</li>
+<li>
+<p><strong>Floating mount.</strong> Two 6 mm guide rods with bushings and stop collars. The head hangs on these under its own weight and can lift freely by 15 mm, so the hardest it can ever press on an arm is that weight (about 7 N by estimate). A switch trips as soon as it starts to lift.</p>
+</li>
+<li>
+<p><strong>Load cell.</strong> A 5 kg bar that carries everything below it and measures the contact force, with its amplifier mounted right beside it on the slide plate so the weak signal travels only a few centimetres.</p>
+</li>
+<li>
+<p><strong>Yaw servo and yoke.</strong> The first servo points straight down and spins a printed U-shaped yoke.</p>
+</li>
+<li>
+<p><strong>Pitch servo and ring.</strong> The second servo sits on one arm of the yoke and tilts a printed ring held between the yoke's arms.</p>
+</li>
+<li>
+<p><strong>Roll servo and probe holder.</strong> The third servo sits on the back of the ring and tilts the holder that clamps the probe.</p>
+</li>
+<li>
+<p><strong>On the holder.</strong> A tilt sensor that reads true pitch and roll from gravity, and the marker actuator clamped to one side.</p>
+</li>
+</ol>
+<p>All three servos are Waveshare ST3215 units, which report their true angle back over a shared cable. The printed parts (yaw mount, yoke, ring, holder, cradles) are specific to the probe, so each version has its own set.</p>
+<p><strong>The marker.</strong> A small linear actuator (Actuonix L12, 30 mm stroke) holds an ink tip 24 mm above the probe face so that it never touches the skin during a scan. To mark, the probe lifts, the gantry shifts sideways by the fixed distance between the probe centre and the tip, and the actuator pushes the tip down onto the skin. Nothing pierces the skin.</p>
+<h2 id="the-enclosure">The enclosure</h2>
+<p>The frame is 20 mm aluminium extrusion on a 12 mm base plate, with 3 mm panels on the back and both sides. The top is left open so the gantry is easy to see and reach during development.</p>
+<ul>
+<li>
+<p><strong>Arm opening.</strong> The front is open to a height of 200 mm across the full width, which is where the forearm goes in.</p>
+</li>
+<li>
+<p><strong>Slanted front panel.</strong> Above the opening, a steep panel runs from the front edge up and back to the top rail 110 mm further in. It carries the 7 inch touchscreen, the emergency stop on the right, and on the Butterfly version the phone. The steep slope keeps it out of the gantry's way while still facing the user.</p>
+</li>
+<li>
+<p><strong>Arm rest.</strong> A padded rest on the base with six thin pressure pads under the padding and a socket for the wrist band sensor.</p>
+</li>
+<li>
+<p><strong>Lighting.</strong> White LED strips under the top rails, on the back, both sides and the front, so the depth cameras always see an evenly lit arm.</p>
+</li>
+<li>
+<p><strong>Electronics bay.</strong> On the outside of the back wall, from top to bottom, sit the 24 V supply and mains inlet, the fuse block and four converters, the USB hub, Teensy and servo adapter, and a shelf with the Jetson and the motion controller. Cables pass through a single grommeted opening in the back wall.</p>
+</li>
+<li>
+<p><strong>Cable holes.</strong> One in the back wall for everything electrical, and one more for the probe cable, whose position depends on the version.</p>
+</li>
+</ul>
+<h2 id="sensing">Sensing</h2>
+<p>The machine has to answer three questions the whole time it runs, and each has more than one sensor behind it.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Sensor</th>
+<th>Where it sits</th>
+<th>What it contributes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Where is the arm and what shape is it?</td>
+<td>Two RealSense D405 depth cameras</td>
+<td>Front left and back right corners, looking down</td>
+<td>A 3D surface of the forearm, which tells the probe what angle to hold at every point</td>
+</tr>
+<tr>
+<td></td>
+<td>Four printed markers</td>
+<td>Stuck on the skin</td>
+<td>Fixed reference points the cameras can find exactly, so a tap on the screen maps to a real spot on the arm</td>
+</tr>
+<tr>
+<td>Has the arm moved?</td>
+<td>Wrist band motion sensor (BNO085)</td>
+<td>Strapped to the wrist</td>
+<td>Catches a twitch within milliseconds</td>
+</tr>
+<tr>
+<td></td>
+<td>Six pressure pads</td>
+<td>Under the arm rest padding</td>
+<td>Feel the arm lift, roll or slide</td>
+</tr>
+<tr>
+<td></td>
+<td>The depth cameras again</td>
+<td></td>
+<td>See the markers drift, more slowly but with no contact needed</td>
+</tr>
+<tr>
+<td>How is the probe sitting on the skin?</td>
+<td>Load cell</td>
+<td>In the head, above the gimbal</td>
+<td>Contact force, so Z stops at a light touch</td>
+</tr>
+<tr>
+<td></td>
+<td>Lift switch</td>
+<td>On the floating mount</td>
+<td>Trips if the head is pushed up at all</td>
+</tr>
+<tr>
+<td></td>
+<td>Tilt sensor (BNO085)</td>
+<td>On the probe holder</td>
+<td>True pitch and roll from gravity, as a check on the servos</td>
+</tr>
+<tr>
+<td></td>
+<td>The servos' own angle sensors</td>
+<td>Inside each servo</td>
+<td>Confirm each tilt move actually finished</td>
+</tr>
+</tbody>
+</table></div>
+<p>Two cameras are used because the probe head will always block one view of the arm from somewhere, and opposite corners guarantee the other camera can still see.</p>
+<h2 id="design-choices">Design choices</h2>
+<p>Each row is a decision that could have gone another way, with what it replaced and the reason it went this way.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Instead of</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ink marker stamp</td>
+<td>A needle insertion mechanism</td>
+<td>Proves the system can find and hit the right point without piercing skin, which keeps the prototype safe to demonstrate.</td>
+</tr>
+<tr>
+<td>Gantry from a donor 3D printer</td>
+<td>Buying motors, rails, controller and supply separately, or a used laser engraver frame</td>
+<td>One $179 purchase supplies most of the motion parts and a 350 W supply already matched to them.</td>
+</tr>
+<tr>
+<td>Two motors on Y</td>
+<td>One motor and one belt</td>
+<td>A bridge driven from one side skews under load.</td>
+</tr>
+<tr>
+<td>Linear rail on Z</td>
+<td>A printed block sliding on extrusion</td>
+<td>The head overhangs by 116 mm, and the rail resists the twist that overhang creates.</td>
+</tr>
+<tr>
+<td>116 mm reach bracket</td>
+<td>The original 70 mm</td>
+<td>The motion sweep showed the yoke hitting the Z rail before yaw reached 90°.</td>
+</tr>
+<tr>
+<td>Floating head</td>
+<td>Relying on the load cell and software to limit force</td>
+<td>A purely mechanical limit still works if the software or a sensor fails.</td>
+</tr>
+<tr>
+<td>Linear actuator for the marker</td>
+<td>A solenoid</td>
+<td>The solenoid's 10 mm throw was short of the 14 mm needed, and an actuator can press gently and hold.</td>
+</tr>
+<tr>
+<td>Feedback bus servos (ST3215)</td>
+<td>Hobby servos (SF3218MG)</td>
+<td>They report their true angle, need one chained cable, and cost only about $3 more each. Gear slack is still unmeasured for both.</td>
+</tr>
+<tr>
+<td>Servos on their own 12 V converter</td>
+<td>Sharing the Jetson's 12 V</td>
+<td>Three stalled servos can draw 8.1 A, nearly double that converter's rating, and the emergency stop must be able to cut them without cutting the computer.</td>
+</tr>
+<tr>
+<td>Load cell amplifier on the head</td>
+<td>On the back wall with the other boards</td>
+<td>The load cell's signal is tiny and would pick up noise over a metre of moving cable.</td>
+</tr>
+<tr>
+<td>Two depth cameras in opposite corners</td>
+<td>One camera in a corner, or one overhead</td>
+<td>The probe head cannot block both at once.</td>
+</tr>
+<tr>
+<td>Three walls and a slanted front</td>
+<td>An open frame</td>
+<td>Keeps hands and stray light out, gives the screen and phone a place facing the user, and gives the electronics an outside wall to live on.</td>
+</tr>
+<tr>
+<td>Electronics outside the back wall</td>
+<td>Mounted on the gantry or inside</td>
+<td>Nothing inside competes with the gantry for space, and the boards stay reachable.</td>
+</tr>
+<tr>
+<td>Jetson plus a separate Teensy</td>
+<td>The Jetson reading every sensor itself</td>
+<td>The safety checks keep running a thousand times a second even when the Jetson is busy with images.</td>
+</tr>
+<tr>
+<td>Emergency stop cuts motion power only</td>
+<td>Cutting everything</td>
+<td>The screen can still tell the user what happened, and the system does not need to reboot.</td>
+</tr>
+<tr>
+<td>Tilt pivot 55 mm above the probe face</td>
+<td>Pivoting at the servo shafts wherever they fall</td>
+<td>Tilting barely shifts the probe face, so less gantry correction is needed.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="butterfly-and-vscan-versions">Butterfly and Vscan versions</h2>
+<p>The two versions share the frame, gantry, floating mount, servos, sensors, computer, power system and software structure. They differ only where the probe itself forces a difference.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Butterfly iQ3 version</th>
+<th>GE Vscan Extend version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Probe body</td>
+<td>152 × 52 × 37 mm, one imaging face</td>
+<td>129 × 39 × 28 mm, dual probe with a transducer at each end</td>
+</tr>
+<tr>
+<td>Printed gimbal parts</td>
+<td>Sized for the wider, longer body</td>
+<td>A smaller set, so the two are not interchangeable</td>
+</tr>
+<tr>
+<td>Where the image appears</td>
+<td>The Butterfly app on a phone</td>
+<td>The Vscan's own display unit</td>
+</tr>
+<tr>
+<td>Where that display lives</td>
+<td>Phone on a magnetic mount on the right of the slanted panel, facing the user</td>
+<td>Display unit inside a light-tight box on the outside of the back wall</td>
+</tr>
+<tr>
+<td>How the Jetson gets the image</td>
+<td>Butterfly's SDK, which the company confirmed streams imaging in real time to other devices</td>
+<td>A small camera (Arducam IMX219) inside the light box, filming the display</td>
+</tr>
+<tr>
+<td>Doppler and biplane imaging</td>
+<td>Available on the probe, and usable if the SDK stream carries them</td>
+<td>Reaches the Jetson only as whatever the filmed screen shows, not as data</td>
+</tr>
+<tr>
+<td>Probe cable route</td>
+<td>Forward through a hole in the slanted panel to the phone</td>
+<td>Back through a hole in the back wall to the display unit</td>
+</tr>
+<tr>
+<td>Touchscreen position</td>
+<td>Shifted 80 mm left to make room for the phone</td>
+<td>Centred on the panel</td>
+</tr>
+<tr>
+<td>Extra power</td>
+<td>5 V to the phone's charging pad</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Extra data cable</td>
+<td>None</td>
+<td>Camera ribbon cable to the Jetson</td>
+</tr>
+<tr>
+<td>Marker offset from probe centre</td>
+<td>48.5 mm</td>
+<td>44 mm</td>
+</tr>
+<tr>
+<td>Extra cost in the parts list</td>
+<td>About $39 (phone mount)</td>
+<td>About $30 (camera and box)</td>
+</tr>
+</tbody>
+</table></div>
+<p>The Butterfly version is the stronger of the two on image quality into the software, since a direct stream beats a camera pointed at a screen, and it is the only one where flow and two-plane data can reach the vessel model. The Vscan version is mechanically lighter and needs no phone.</p>
+<h2 id="how-the-design-got-here">How the design got here</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Revision</th>
+<th>What changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CAD version 6</td>
+<td>Hobby servos replaced by ST3215 bus servos. Servo driver board replaced by a bus adapter. Separate 12 V converter for the servos and a small 6 V one for the marker.</td>
+</tr>
+<tr>
+<td>CAD version 5</td>
+<td>Floating head added as a mechanical force limit. Z slide moved onto a linear rail.</td>
+</tr>
+<tr>
+<td>CAD version 4</td>
+<td>Second design audit. Dedicated second Y motor added, load cell amplifier moved onto the head, limit switches added.</td>
+</tr>
+<tr>
+<td>CAD version 3</td>
+<td>First motion sweep. Reach bracket lengthened from 70 to 116 mm so yaw clears the Z rail. Marker solenoid replaced by a linear actuator.</td>
+</tr>
+<tr>
+<td>CAD version 2</td>
+<td>First fully detailed model with every part, fastener and wire, checked for collisions.</td>
+</tr>
+<tr>
+<td>Viewer version 7</td>
+<td>Enclosure refactor. Three walls, slanted front panel, electronics moved outside, lighting and wiring mapped.</td>
+</tr>
+<tr>
+<td>Earlier viewer versions</td>
+<td>Open gantry concept. Needle insertion replaced by an ink marker. One corner camera became two. Touchscreen added.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The browser 3D viewer still shows the version 7 layout and has not been updated to match CAD version 6.</p>
+<h2 id="known-limits-and-open-questions">Known limits and open questions</h2>
+<ul>
+<li>
+<p><strong>Nothing has been built yet.</strong> Every dimension comes from the CAD model and supplier pages, and the probe bodies are modelled from published outer dimensions, not measured from the real probes.</p>
+</li>
+<li>
+<p><strong>Servo slack is unmeasured.</strong> No supplier publishes it. One degree of play moves the probe face about 1 mm, so the first servo to arrive should be tested before the other two are ordered.</p>
+</li>
+<li>
+<p><strong>Head weight sets the force limit.</strong> The 7 N figure is an estimate and needs confirming by weighing the finished head.</p>
+</li>
+<li>
+<p><strong>Depth cameras on bare skin.</strong> The D405 relies on visible texture, which smooth skin lacks, so one should be tested on a forearm before buying two.</p>
+</li>
+<li>
+<p><strong>Ultrasound gel.</strong> The probe needs gel, and loose gel smears the ink mark. A solid gel pad over the probe face is the likely answer and is not yet in the design.</p>
+</li>
+<li>
+<p><strong>Scanning is stop-and-go.</strong> The probe moves, settles, corrects its tilt and then images. It does not glide continuously, which keeps the six axes in step at the cost of speed.</p>
+</li>
+<li>
+<p><strong>Reach.</strong> 210 mm of travel along the arm covers a typical fistula site but not a whole forearm in one pass, so the arm has to be placed with the site inside that window.</p>
+</li>
+<li>
+<p><strong>The Teensy cannot yet stop the motors by itself.</strong> A stop wire from the Teensy to the motion controller is recommended and not yet in the CAD.</p>
+</li>
+<li>
+<p><strong>Open top.</strong> Fine for development, but a finished unit would want a lid to keep hands and light out.</p>
+</li>
+</ul>
+<p>Part numbers and prices are in the <a href="parts-list.html">parts list</a>, part-by-part research notes are in the <a href="parts-research.html">parts research brief</a>, and the cable-by-cable map is in the <a href="wiring-software.html">wiring and software debrief</a>.</p>
+</article>
+</div>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p><span class="dot" aria-hidden="true"></span>UltraVena · Team 7, Electrical and Systems Engineering, University of Pennsylvania</p>
+    <p class="small">A student research prototype. It is not a medical device and has not been tested on patients.</p>
+  </div>
+</footer>
+
+</body>
+</html>
