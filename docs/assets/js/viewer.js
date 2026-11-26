@@ -101,7 +101,7 @@
       current = obj;
       scene.add(obj);
       applyWalls();
-      status.textContent = 'CAD version 6';
+      status.textContent = 'CAD version 7';
       dirty = true;
     }
     if (cache[key]) { place(cache[key]); return; }

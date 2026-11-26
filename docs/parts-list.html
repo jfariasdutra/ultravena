@@ -29,9 +29,9 @@
 <header class="doc-head">
 <h1>Parts List</h1>
 <p class="lede">Every part to order, with supplier, part number, price and what still needs checking.</p>
-<p class="meta">Updated 24 Nov 2026 · <a href="assets/files/ultravena-parts-list.pdf">Download as PDF</a></p>
+<p class="meta">Updated 26 Nov 2026 · <a href="assets/files/ultravena-parts-list.pdf">Download as PDF</a></p>
 </header>
-<p>The full build comes to about $2,155 before shipping and tax, of which $1,055 is confirmed supplier pricing and the rest is estimated.</p>
+<p>The full build comes to about $1,390 before shipping and tax, of which $987 is confirmed supplier pricing and the rest is estimated. That is about $765 less than the previous version, after the team's design review.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -43,8 +43,8 @@
 <tbody>
 <tr>
 <td>Order list (parts with a listing)</td>
-<td>1,883</td>
-<td>1,055</td>
+<td>1,155</td>
+<td>987</td>
 </tr>
 <tr>
 <td>Parts to make or source locally</td>
@@ -53,7 +53,7 @@
 </tr>
 <tr>
 <td>Butterfly iQ3 extras</td>
-<td>39</td>
+<td>0</td>
 <td>0</td>
 </tr>
 <tr>
@@ -63,9 +63,9 @@
 </tr>
 </tbody>
 </table></div>
-<p>The two depth cameras are the largest line at an estimated $700, and their US price is not confirmed. This list follows the UltraVena rig viewer: whenever the design changes, the affected rows are updated and the change is recorded in the change log at the end. Prices are not rechecked automatically.</p>
+<p>The largest lines are now the Jetson ($249) and the donor printer ($179). The iPad mini that replaces the touchscreen and phone is supplied by the team and is not counted. This list follows the UltraVena CAD model: whenever the design changes, the affected rows are updated and the change is recorded in the change log at the end. Prices are not rechecked automatically.</p>
 <h2 id="order-list">Order list</h2>
-<p>Every price below marked Confirmed was read from the supplier's page on 23 or 24 Nov 2026. Prices exclude shipping and tax.</p>
+<p>Every price below marked Confirmed was read from the supplier's page on 23, 24 or 26 Nov 2026. Prices exclude shipping and tax.</p>
 <h3 id="motion">Motion</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -134,6 +134,15 @@
 <td>Confirmed</td>
 <td>Replaces the Adafruit 815 servo driver. Links the three servos, chained on one cable, to the Teensy or to the Jetson over USB, and feeds them 12 V. 9 to 12.6 V input.</td>
 </tr>
+<tr>
+<td>Small extension springs, assorted</td>
+<td>Not selected</td>
+<td>1 set</td>
+<td>8.00</td>
+<td>8.00</td>
+<td>Estimate</td>
+<td>One spring on each tilt joint holds its gears to one side, which removes the free play in the servos. Three are used; an assortment lets the stiffness be tuned.</td>
+</tr>
 </tbody>
 </table></div>
 <h3 id="probe-head">Probe head</h3>
@@ -171,20 +180,20 @@
 <tr>
 <td><a href="https://www.adafruit.com/products/4754" target="_blank" rel="noopener">Adafruit BNO085 9-DOF orientation sensor</a></td>
 <td>4754</td>
-<td>2</td>
+<td>1</td>
 <td>29.50</td>
-<td>59.00</td>
+<td>29.50</td>
 <td>Confirmed</td>
-<td>One on the probe holder as the tilt sensor, one in the wrist band.</td>
+<td>On the probe holder as the tilt sensor. The second one, for the wrist band, was dropped.</td>
 </tr>
 <tr>
-<td><a href="https://ca.robotshop.com/products/actuonix-l12-actuator-30mm-501-6v-rc-control" target="_blank" rel="noopener">Actuonix L12-30-50-6-R micro linear servo</a> (RobotShop Canada)</td>
-<td>RB-Fir-223, maker no. L12-30-50-6-R</td>
+<td><a href="https://www.adafruit.com/products/1143" target="_blank" rel="noopener">Adafruit micro servo, MG90D metal gear</a></td>
+<td>1143</td>
 <td>1</td>
-<td>102.94</td>
-<td>102.94</td>
-<td>Confirmed, currency unclear</td>
-<td>Lowers and presses the marker. 30 mm stroke, 22 N, 6 V, 460 mA stall, powered by its own 6 V converter, control signal straight from a Teensy pin. 1 left when checked.</td>
+<td>9.95</td>
+<td>9.95</td>
+<td>Confirmed</td>
+<td>Lifts and lowers the marker pen. Replaces the Actuonix linear servo ($102.94). 4.8 to 6 V, 22.8 x 12.2 x 28.5 mm, 13.4 g. The pen tip is spring-loaded, so the spring sets how hard it presses. In stock.</td>
 </tr>
 <tr>
 <td>Floating head hardware: two 6 mm guide rods, two bushings, two stop collars</td>
@@ -194,6 +203,24 @@
 <td>12.00</td>
 <td>Estimate</td>
 <td>Lets the probe head lift 15 mm when pushed, so contact force cannot exceed the head's own weight.</td>
+</tr>
+<tr>
+<td>Adafruit VL53L4CD time-of-flight distance sensor</td>
+<td>5396</td>
+<td>4</td>
+<td>14.95</td>
+<td>59.80</td>
+<td>Confirmed</td>
+<td>Four around the probe, looking down. Together they measure the skin's local tilt and distance before contact, and one reading far means an edge. About 1 to 1300 mm range, 25.5 x 17.7 mm board, which is larger than the 10 x 13 mm drawn in CAD. In stock.</td>
+</tr>
+<tr>
+<td>Head sensor board, Adafruit QT Py RP2040 or similar</td>
+<td>4900</td>
+<td>1</td>
+<td>9.95</td>
+<td>9.95</td>
+<td>Estimate</td>
+<td>Small microcontroller on the Z slide. Reads the four distance sensors, the tilt sensor and the load cell, drives the marker servo, and sends everything to the Teensy down one cable. Price not read from the supplier page.</td>
 </tr>
 </tbody>
 </table></div>
@@ -212,13 +239,13 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="https://realsenseai.com/products/stereo-depth-camera-d405/" target="_blank" rel="noopener">RealSense D405 depth camera</a></td>
-<td>82635DSD405</td>
+<td><a href="https://www.arducam.com/product/arducam-1080p-low-light-low-distortion-usb-camera-module-with-microphone/" target="_blank" rel="noopener">Arducam 1080P low distortion USB camera module</a></td>
+<td>B0468</td>
 <td>2</td>
-<td>350.00</td>
-<td>700.00</td>
-<td>Estimate</td>
-<td>Works from 7 to 50 cm, which fits this rig. No US price could be read; DigiKey China lists ¥2,973 including tax.</td>
+<td>39.99</td>
+<td>79.98</td>
+<td>Confirmed</td>
+<td>Replace the two RealSense D405 depth cameras (about $700). One high for the view the user taps on, one low on a side wall that sees under the bridge. They track the printed markers on the arm and on the probe head. 1080p at 30 frames a second, 71 degree horizontal view, manual focus, 38 x 38 mm board, plugs in as a standard USB camera. Stock not shown on the page.</td>
 </tr>
 <tr>
 <td><a href="https://www.adafruit.com/products/1075" target="_blank" rel="noopener">Adafruit square force-sensitive resistor</a></td>
@@ -227,7 +254,7 @@
 <td>5.95</td>
 <td>35.70</td>
 <td>Confirmed</td>
-<td>Pressure pads, 38 mm square. Out of stock at Adafruit when checked. <a href="https://www.pololu.com/product/1645" target="_blank" rel="noopener">Pololu 1645</a> is the same size at $20.49.</td>
+<td>Pressure pads, 38 mm square, now laid out in two columns of three so a rolling arm shifts weight between columns. Out of stock at Adafruit when checked. <a href="https://www.pololu.com/product/1645" target="_blank" rel="noopener">Pololu 1645</a> is the same size at $20.49.</td>
 </tr>
 </tbody>
 </table></div>
@@ -273,13 +300,13 @@
 <td>The microcontroller for the fast safety loop. In stock.</td>
 </tr>
 <tr>
-<td><a href="https://www.waveshare.com/product/7inch-hdmi-lcd-h-with-case.htm" target="_blank" rel="noopener">Waveshare 7 inch HDMI touchscreen (H) with case</a></td>
-<td>13857</td>
+<td>iPad mini (supplied by the team)</td>
+<td>Not purchased</td>
 <td>1</td>
-<td>53.99</td>
-<td>53.99</td>
-<td>Confirmed</td>
-<td>1024 × 600, capacitive, lists Jetson Orin support.</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>Not counted</td>
+<td>Replaces the 7 inch touchscreen ($53.99) and the phone. Runs the team's control app, holds the Butterfly probe through its USB-C port, and talks to the Jetson over Wi-Fi. Sits in a printed slot on the front panel and lifts out to charge. 195.4 x 134.8 x 6.3 mm.</td>
 </tr>
 <tr>
 <td>Powered USB 3 hub, 7 port</td>
@@ -334,31 +361,31 @@
 <td>Servo bus only, fed through the emergency stop. Replaces the 6 V 15 A converter (2882) at the same price. Rationed, and Pololu points new designs to its newer D42V110F family.</td>
 </tr>
 <tr>
-<td><a href="https://www.pololu.com/product/3783" target="_blank" rel="noopener">Pololu 6 V 2.7 A converter, D36V28F6</a></td>
-<td>3783</td>
-<td>1</td>
-<td>24.95</td>
-<td>24.95</td>
-<td>Confirmed</td>
-<td>Marker actuator only (460 mA stall), fed through the emergency stop. Rationed.</td>
-</tr>
-<tr>
 <td><a href="https://www.pololu.com/product/4091" target="_blank" rel="noopener">Pololu 5 V 5.5 A converter, D36V50F5</a></td>
 <td>4091</td>
 <td>1</td>
 <td>44.95</td>
 <td>44.95</td>
 <td>Confirmed</td>
-<td>Touchscreen and USB hub. Rationed, backorder only.</td>
+<td>USB hub, head sensor board and marker servo. Rationed, backorder only.</td>
 </tr>
 <tr>
-<td><a href="https://www.dfrobot.com/product-521.html" target="_blank" rel="noopener">DFRobot emergency stop switch</a></td>
-<td>FIT0156</td>
+<td>Emergency stop, 22 mm, normally closed, twist release</td>
+<td>Not selected</td>
 <td>1</td>
-<td>5.90</td>
-<td>5.90</td>
-<td>Confirmed</td>
-<td>22 mm mounting hole, 10 A. 3 left when checked.</td>
+<td>15.00</td>
+<td>15.00</td>
+<td>Estimate</td>
+<td>Replaces the DFRobot FIT0156, which DigiKey lists as normally open, the wrong kind. One candidate is the <a href="https://www.digikey.ca/en/products/detail/excel-cell-electronic-co-ltd/ECS-22RE1RM1Q-010Q/25812945" target="_blank" rel="noopener">Excel Cell ECS-22RE1RM1Q-010Q</a>, normally closed, 10 A, twist reset, C$12.61 at DigiKey Canada but out of stock with a 10 week lead. IDEC AVW401-R and Eaton M22-PVT-K01 are others to price.</td>
+</tr>
+<tr>
+<td>Power relay, 24 V coil, 30 A or more</td>
+<td>Not selected</td>
+<td>1</td>
+<td>6.00</td>
+<td>6.00</td>
+<td>Estimate</td>
+<td>Carries the motor and servo current (up to about 6.5 A). The stop button only breaks the relay's coil circuit, so the button never switches the full load, and a broken wire also drops the relay. American Zettler AZ9731-1A-24DC1 is one to price.</td>
 </tr>
 <tr>
 <td><a href="https://www.adafruit.com/products/4612" target="_blank" rel="noopener">Adafruit ultra flexible white LED strip, 1 m</a></td>
@@ -404,15 +431,6 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>Butterfly iQ3</td>
-<td>MagSafe charger or magnetic mount for the phone</td>
-<td>Not selected</td>
-<td>1</td>
-<td>39.00</td>
-<td>Estimate</td>
-<td>Sits on the slanted front panel. A real MagSafe charger needs a USB-C power source, not the plain 5 V rail.</td>
-</tr>
 <tr>
 <td>GE Vscan Extend</td>
 <td><a href="https://www.sparkfun.com/arducam-imx219-visible-light-fixed-focus-camera-module-for-nvidiar-jetson-agx-orin-orin-nano-orin-nx.html" target="_blank" rel="noopener">Arducam IMX219 camera module for Jetson</a> (SparkFun)</td>
@@ -467,7 +485,7 @@
 <td>Printing filament, 1 kg</td>
 <td>1</td>
 <td>20</td>
-<td>Gimbal, probe holder, stamp bracket, camera brackets, shelf brackets.</td>
+<td>Gimbal, probe holder with its pen guide and sensor tabs, iPad slot, camera brackets, hand grip posts, shelf brackets.</td>
 </tr>
 <tr>
 <td>Wire, connectors, cable chain, grommets, fasteners</td>
@@ -476,75 +494,44 @@
 <td>Wire gauges are not yet specified.</td>
 </tr>
 <tr>
-<td>Arm rest padding and wrist strap</td>
+<td>Arm rest padding and hand grip</td>
 <td>1</td>
 <td>15</td>
-<td>Foam and hook-and-loop strap.</td>
+<td>Foam for the cradle and a soft sleeve over the grip bar. The wrist strap was dropped with the wrist band.</td>
 </tr>
 <tr>
 <td>Tracking markers</td>
-<td>4</td>
+<td>5</td>
 <td>0</td>
-<td>Printed on paper or sticker sheet.</td>
+<td>Printed on paper or sticker sheet. Four go on the arm and one on the probe head, so the cameras see both in the same picture.</td>
 </tr>
 <tr>
-<td>Felt marker tip for the stamp</td>
+<td>Skin-safe marker pen with a spring-loaded tip</td>
 <td>1</td>
 <td>0</td>
-<td>Cut from a skin-safe marker.</td>
+<td>A short spring between the pen and its collar sets the press force.</td>
 </tr>
 </tbody>
 </table></div>
 <h2 id="check-before-ordering">Check before ordering</h2>
 <ul class="tasks">
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Butterfly SDK on the Jetson.</strong> Butterfly confirmed its SDK streams imaging in real time to other devices, so no extra hardware is needed for the image. Still to confirm with them: whether the stream is received on the Jetson directly or relayed from the phone, and whether Doppler and biplane frames come through it. The Vscan route (camera on its display) is in the list.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Gel.</strong> Decide between gel applied by hand before the scan and a solid gel pad clipped over the probe face. Loose gel will smear the marker ink.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Force limit.</strong> Designed in CAD version 5 as a floating head. Weigh the finished head to confirm the limit, and test that the lift switch stops the motors before any use on a person.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Z slide bearing.</strong> Designed in CAD version 5 as a linear rail with two carriages. Choose a supplier for the rail; no listing is confirmed yet.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Depth cameras are over a third of the budget.</strong> Get a real US quote for the D405. One camera, or two plain webcams reading the markers, would be enough to start.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Depth cameras on bare skin.</strong> The D405 relies on visible texture, and smooth skin has little. Test one on a forearm before buying two.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Donor printer.</strong> Confirm the Ender-3 V3 SE's limit switches and mains inlet can be reused, and that its controller can be reflashed to drive two Y motors. If not, swap in a generic four-driver board.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Pololu converters are backorder only.</strong> Ask for a lead time, or pick in-stock equivalents with the same ratings (12 V at 4.5 A, 12 V at 15 A, 6 V at 2.7 A, 5 V at 5 A).</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Servo power path.</strong> Waveshare lists 2.7 A stall per servo at 12 V, so 8.1 A with all three stalled, against 15 A from the servo converter. Confirm the bus adapter's power terminal and the servo chain cable can carry that, and wire 12 V straight to the first servo if not.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Servo slack.</strong> No supplier publishes gear slack for the ST3215. Buy one, clamp a 100 mm arm to it and measure the free play at the tip before buying the other two. Under 0.5 mm at the tip (about 0.3 degrees) is the target.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Signal levels.</strong> The Teensy is a 3.3 V board. Confirm the marker actuator accepts a 3.3 V control signal, and that the bus adapter's serial pins work at 3.3 V.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Long sensor cables.</strong> The tilt sensor and wrist band sit over a metre of moving cable from the Teensy. Use the BNO085's serial mode for that run.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Marker actuator price.</strong> The only listing found is on RobotShop's Canadian site, so the $102.94 may be in Canadian dollars, and one unit was left.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Emergency stop contacts.</strong> The DFRobot page does not say whether the contacts are normally closed, which is what the 24 V cut needs.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Camera cable for the Vscan build.</strong> The Arducam module has a 15-pin connector; confirm the Jetson kit's connector and buy an adapter cable if needed.</p>
-</li>
-<li class="task">
-<p><span class="box" aria-hidden="true"></span><strong>Out-of-stock items.</strong> The pressure pads were out of stock at Adafruit when checked.</p>
-</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Butterfly SDK and the iPad mini.</strong> Butterfly publishes an iOS imaging SDK that gives an app live B-mode and Color Doppler frames from a probe plugged into the iPad. Get the access token and client key from Butterfly, confirm the team's iPad mini is on Butterfly's supported device list and runs iOS 18 or newer, and note that biplane is not mentioned on the SDK page. The Vscan route (camera on its display) is in the list.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Gel.</strong> Decide between gel applied by hand before the scan and a solid gel pad clipped over the probe face. Loose gel will smear the marker ink.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Force limit.</strong> Designed in CAD version 5 as a floating head. Weigh the finished head to confirm the limit, and test that the lift switch stops the motors before any use on a person.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Z slide bearing.</strong> Designed in CAD version 5 as a linear rail with two carriages. Choose a supplier for the rail; no listing is confirmed yet.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Webcams and markers.</strong> Before buying both, test one camera tracking a 20 mm printed marker on skin while the arm is nudged by 1 mm, and test that both cameras can see the probe head marker together.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Distance sensors near gel.</strong> Wet gel is shiny and may confuse the sensors. Test one over a gelled forearm at 10 to 40 mm before buying four. The fallback needs no parts: touch down gently at three points and work out the tilt from the load cell.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Donor printer.</strong> Confirm the Ender-3 V3 SE's limit switches and mains inlet can be reused, and that its controller can be reflashed to drive two Y motors. If not, swap in a generic four-driver board.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Pololu converters are backorder only.</strong> Ask for a lead time, or pick in-stock equivalents with the same ratings (12 V at 4.5 A, 12 V at 15 A, 5 V at 5 A).</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Servo power path.</strong> Waveshare lists 2.7 A stall per servo at 12 V, so 8.1 A with all three stalled, against 15 A from the servo converter. Confirm the bus adapter's power terminal and the servo chain cable can carry that, and wire 12 V straight to the first servo if not.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Servo slack and springs.</strong> A teammate found a test showing about three times the 0.3 degree target, close to 1 mm at the probe face. Each joint now has a spring that holds its gears to one side. Choose spring stiffness so the spring always wins over the probe's weight at full tilt, and check the servos do not run hot holding against it.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Signal levels.</strong> The Teensy and the head sensor board are 3.3 V boards. Confirm the marker servo accepts a 3.3 V control pulse while powered from 5 V, and that the bus adapter's serial pins work at 3.3 V.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Head sensor board.</strong> The four distance sensors share one address, so each needs its own enable wire from the board. Confirm the chosen board has enough pins for four enables, the sensor bus, the load cell amplifier, the tilt sensor, the marker servo and the serial link to the Teensy (11 in all if one sensor keeps its default address and only three get an enable wire, which is exactly what the QT Py offers and leaves nothing spare), or pick a larger board.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Marker lift.</strong> The pen needs about 15 mm of travel (the tip rides 8 mm above the probe face). Check the micro servo's arm gives that, and pick a spring for the tip that marks clearly without pressing hard.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Emergency stop and relay.</strong> Choose an in-stock normally-closed, twist-release stop button and a relay with a 24 V coil. Confirm the relay's contact rating on DC covers the 6.5 A motor branch.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Camera cable for the Vscan build.</strong> The Arducam module has a 15-pin connector; confirm the Jetson kit's connector and buy an adapter cable if needed.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Out-of-stock items.</strong> The pressure pads were out of stock at Adafruit when checked.</li>
+<li class="task"><span class="box" aria-hidden="true"></span><strong>Jetson Wi-Fi.</strong> The iPad talks to the Jetson over Wi-Fi. NVIDIA's page says the kit comes with a wireless module fitted. Confirm it can host its own network, and that antennas are included.</li>
 </ul>
 <h2 id="change-log">Change log</h2>
 <div class="table-wrap"><table>
@@ -556,6 +543,11 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>26 Nov 2026</td>
+<td>CAD model version 7 (team design review, iPad mini)</td>
+<td>Two RealSense D405 cameras replaced by two Arducam USB cameras. Actuonix marker actuator and its 6 V converter replaced by a micro servo. Touchscreen and phone mount replaced by a team-supplied iPad mini in a printed slot. Wrist band sensor dropped. Four distance sensors, a head sensor board, joint springs and a power relay added. Stop button changed to a normally-closed type. Total down from about $2,155 to about $1,390.</td>
+</tr>
 <tr>
 <td>24 Nov 2026</td>
 <td>CAD model version 6 (serial bus servos)</td>
@@ -587,6 +579,7 @@
 <p>Pages opened on 23 Nov 2026: <a href="https://www.matterhackers.com/store/l/creality-ender-3-v3-se-3d-printer/sk/M5EYNWU0" target="_blank" rel="noopener">MatterHackers</a>, <a href="https://www.bestbuy.com/product/creality-ender-3-v3-se-printer/CZT3ZRXZKF" target="_blank" rel="noopener">Best Buy</a>, <a href="https://www.robotshop.com/products/sunfounder-sf3218mg-metal-gear-digital-servo-20kg-high-torque" target="_blank" rel="noopener">RobotShop</a>, <a href="https://www.adafruit.com/product/815" target="_blank" rel="noopener">Adafruit 815</a>, <a href="https://www.adafruit.com/products/4754" target="_blank" rel="noopener">Adafruit 4754</a>, <a href="https://www.adafruit.com/product/413" target="_blank" rel="noopener">Adafruit 413</a>, <a href="https://www.adafruit.com/products/412" target="_blank" rel="noopener">Adafruit 412</a>, <a href="https://www.adafruit.com/products/1075" target="_blank" rel="noopener">Adafruit 1075</a>, <a href="https://www.adafruit.com/products/4612" target="_blank" rel="noopener">Adafruit 4612</a>, <a href="https://thepihut.com/products/adafruit-mosfet-driver-for-motors-solenoids-leds-etc-stemma-jst-ph-2mm" target="_blank" rel="noopener">The Pi Hut</a>, <a href="https://sparkfun.com/products/14729" target="_blank" rel="noopener">SparkFun SEN-14729</a>, <a href="https://www.sparkfun.com/products/13879" target="_blank" rel="noopener">SparkFun SEN-13879</a>, <a href="https://www.sparkfun.com/nvidia-jetson-orin-nano-developer-kit.html" target="_blank" rel="noopener">SparkFun DEV-22098</a>, <a href="https://www.sparkfun.com/teensy-4-0.html" target="_blank" rel="noopener">SparkFun DEV-15583</a>, <a href="https://www.sparkfun.com/arducam-imx219-visible-light-fixed-focus-camera-module-for-nvidiar-jetson-agx-orin-orin-nano-orin-nx.html" target="_blank" rel="noopener">SparkFun SEN-28170</a>, <a href="https://www.waveshare.com/product/7inch-hdmi-lcd-h-with-case.htm" target="_blank" rel="noopener">Waveshare</a>, <a href="https://www.pololu.com/product/4095" target="_blank" rel="noopener">Pololu 4095</a>, <a href="https://www.pololu.com/product/4091" target="_blank" rel="noopener">Pololu 4091</a>, <a href="https://www.pololu.com/product/2882" target="_blank" rel="noopener">Pololu 2882</a>, <a href="https://www.pololu.com/product/1645" target="_blank" rel="noopener">Pololu 1645</a>, <a href="https://www.dfrobot.com/product-521.html" target="_blank" rel="noopener">DFRobot</a>, <a href="https://realsenseai.com/products/stereo-depth-camera-d405/" target="_blank" rel="noopener">RealSense</a>, <a href="https://digikey.cn/en/products/detail/intel-realsense/82635DSD405/16056868" target="_blank" rel="noopener">DigiKey China</a>, <a href="https://us.openbuilds.com/v-slot-20x20-linear-rail" target="_blank" rel="noopener">OpenBuilds</a>.</p>
 <p>Added since: <a href="https://ca.robotshop.com/products/actuonix-l12-actuator-30mm-501-6v-rc-control" target="_blank" rel="noopener">RobotShop Canada, Actuonix L12</a> and <a href="https://www.pololu.com/product/2267" target="_blank" rel="noopener">Pololu 2267</a>, opened 23 and 24 Nov 2026.</p>
 <p>Added for CAD version 6, opened 24 Nov 2026: <a href="https://www.waveshare.com/st3215-servo.htm?sku=22414" target="_blank" rel="noopener">Waveshare ST3215</a>, <a href="https://www.waveshare.com/bus-servo-adapter-a.htm" target="_blank" rel="noopener">Waveshare Bus Servo Adapter (A)</a>, <a href="https://www.pololu.com/product/2885" target="_blank" rel="noopener">Pololu 2885</a> and <a href="https://www.pololu.com/product/3783" target="_blank" rel="noopener">Pololu 3783</a>.</p>
+<p>Added for CAD version 7, opened 26 Nov 2026: <a href="https://www.arducam.com/product/arducam-1080p-low-light-low-distortion-usb-camera-module-with-microphone/" target="_blank" rel="noopener">Arducam B0468</a>, <a href="https://www.adafruit.com/product/5396" target="_blank" rel="noopener">Adafruit 5396</a>, <a href="https://www.adafruit.com/products/1143" target="_blank" rel="noopener">Adafruit 1143</a>, <a href="https://www.digikey.ca/en/products/detail/excel-cell-electronic-co-ltd/ECS-22RE1RM1Q-010Q/25812945" target="_blank" rel="noopener">DigiKey Canada, Excel Cell emergency stop</a>, <a href="https://www.digikey.co.nz/en/products/detail/dfrobot/FIT0156/25558530" target="_blank" rel="noopener">DigiKey, DFRobot FIT0156</a> and the <a href="https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/latest/hardware_layout.html" target="_blank" rel="noopener">NVIDIA Jetson Orin Nano hardware layout</a>.</p>
 </article>
 </div>
 </main>

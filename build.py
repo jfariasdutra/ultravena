@@ -166,7 +166,7 @@ def home_page(h, pages, docs, updates):
     <p class="stage"><span class="dot" aria-hidden="true"></span>{esc(h["stage"])}</p>
     <p class="actions"><a class="button" href="hardware.html">Read the hardware brief</a><a class="button ghost" href="cad.html">Turn the 3D model</a></p>
   </div>
-  <figure class="hero-fig"><img src="assets/img/cad-hero.png" alt="CAD render of the UltraVena rig: an aluminium frame with three walls, a slanted front panel carrying a touchscreen and phone, and an overhead gantry holding an ultrasound probe above an arm rest" width="1026" height="821"><figcaption>CAD version 6, Butterfly iQ3 version</figcaption></figure>
+  <figure class="hero-fig"><img src="assets/img/cad-hero.png" alt="CAD render of the UltraVena rig: an aluminium frame with three walls, a slanted front panel carrying an iPad and a red stop button, and an overhead gantry holding an ultrasound probe above an arm rest" width="1026" height="821"><figcaption>CAD version 7, Butterfly iQ3 version</figcaption></figure>
 </section>
 <section class="band"><dl class="stats">{stats}</dl></section>
 <section class="block">

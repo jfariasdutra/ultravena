@@ -1,44 +1,136 @@
 {
   "tagline": "Ultrasound-guided cannulation for dialysis",
   "lede": "UltraVena is a tabletop machine that scans a forearm with a motorised ultrasound probe, finds the fistula, and stamps an ink dot where the needle should go. Nothing pierces the skin.",
-  "stage": "Design stage. CAD version 6 is the current iteration and nothing has been built yet.",
+  "stage": "Design stage. CAD version 7, reworked after the team's design review, is the current iteration and nothing has been built yet.",
   "stats": [
-    {"n": "6", "l": "axes of motion"},
-    {"n": "516 × 558 × 590", "l": "mm, fits a clinic table"},
-    {"n": "~7 N", "l": "most the probe can press, by estimate"},
-    {"n": "~$2,155", "l": "estimated build cost"}
+    {
+      "n": "6",
+      "l": "axes of motion"
+    },
+    {
+      "n": "516 × 558 × 590",
+      "l": "mm, fits a clinic table"
+    },
+    {
+      "n": "~7 N",
+      "l": "most the probe can press, by estimate"
+    },
+    {
+      "n": "~$1,390",
+      "l": "estimated build cost"
+    }
   ],
   "steps": [
-    ["Arm in", "The user rests a forearm on the padded rest and the lights come on."],
-    ["Find the arm", "Two depth cameras build a 3D surface of the forearm."],
-    ["Pick a start", "The user taps a spot on the touchscreen."],
-    ["Touch down", "The probe tilts square to the skin and lowers until it feels light contact."],
-    ["Scan", "The probe steps along the arm while a model outlines the vessel in each image."],
-    ["Watch", "Three independent sensors check the arm has not moved."],
-    ["Choose", "Software picks the point from the vessel's depth, width and position."],
-    ["Mark", "The probe lifts, shifts, and a small actuator presses an ink tip onto the skin."]
+    [
+      "Arm in",
+      "The user rests a forearm on the padded rest, takes hold of the grip, and the lights come on."
+    ],
+    [
+      "Find the arm",
+      "Two webcams find printed markers on the arm and on the probe head."
+    ],
+    [
+      "Pick a start",
+      "The user taps a spot on the iPad."
+    ],
+    [
+      "Touch down",
+      "Four distance sensors read the skin, the probe tilts square to it and lowers until it feels light contact."
+    ],
+    [
+      "Scan",
+      "The probe steps along the arm while a model outlines the vessel in each image."
+    ],
+    [
+      "Watch",
+      "Pressure pads and the webcams check the arm has not moved."
+    ],
+    [
+      "Choose",
+      "Software picks the point from the vessel's depth, width and position."
+    ],
+    [
+      "Mark",
+      "The probe lifts, shifts, and a small servo dips an ink pen onto the skin."
+    ]
   ],
   "status": [
-    ["Mechanical design", "progress", "CAD version 6 is the current iteration, still open to changes"],
-    ["Parts list", "progress", "Current picks have listings and prices, part swaps still expected"],
-    ["Wiring plan", "progress", "First full plan written, will change as parts are finalised"],
-    ["Vessel model", "progress", "Version 2 works on generated images, waiting on real scans"],
-    ["Ultrasound link", "progress", "Butterfly confirmed real-time streaming, details to settle"],
-    ["Control software", "todo", "Planned, not yet written"],
-    ["Physical build", "todo", "Not started"],
-    ["Testing on an arm", "todo", "Not started"]
+    [
+      "Mechanical design",
+      "progress",
+      "CAD version 7 is the current iteration, still open to changes"
+    ],
+    [
+      "Parts list",
+      "progress",
+      "Repriced for version 7 at about $1,390, part swaps still expected"
+    ],
+    [
+      "Wiring plan",
+      "progress",
+      "Rewritten for the iPad, the head sensor board and the relay stop, will change as parts are finalised"
+    ],
+    [
+      "Vessel model",
+      "progress",
+      "Version 2 works on generated images, waiting on real scans"
+    ],
+    [
+      "Ultrasound link",
+      "progress",
+      "The iPad app will read frames through the Butterfly SDK, access and details to settle"
+    ],
+    [
+      "Control software",
+      "todo",
+      "Planned, not yet written"
+    ],
+    [
+      "Physical build",
+      "todo",
+      "Not started"
+    ],
+    [
+      "Testing on an arm",
+      "todo",
+      "Not started"
+    ]
   ],
   "team": {
     "intro": "UltraVena is the senior design project of Team 7 in Electrical and Systems Engineering at the University of Pennsylvania.",
     "people": [
-      ["Jonathan Farias Dutra Rodriguez", "Team 7"],
-      ["Brandon Parkansky", "Team 7"],
-      ["Jose Gonzalez", "Team 7"],
-      ["Charlotte Tan", "Team 7"],
-      ["Gabriel Sola", "Team 7"],
-      ["Dillon Malkani", "Team 7"],
-      ["Prof. Rahul Mangharam", "Faculty advisor"],
-      ["Dr. Sandeep Aggarwal", "Clinical advisor"]
+      [
+        "Jonathan Farias Dutra Rodriguez",
+        "Team 7"
+      ],
+      [
+        "Brandon Parkansky",
+        "Team 7"
+      ],
+      [
+        "Jose Gonzalez",
+        "Team 7"
+      ],
+      [
+        "Charlotte Tan",
+        "Team 7"
+      ],
+      [
+        "Gabriel Sola",
+        "Team 7"
+      ],
+      [
+        "Dillon Malkani",
+        "Team 7"
+      ],
+      [
+        "Prof. Rahul Mangharam",
+        "Faculty advisor"
+      ],
+      [
+        "Dr. Sandeep Aggarwal",
+        "Clinical advisor"
+      ]
     ]
   }
 }
